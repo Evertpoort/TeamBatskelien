@@ -39,7 +39,7 @@ public class Networker {
         frame.getContentPane().add(jscroll,"Center");
         frame.pack();
         frame.setVisible(true);
-
+//qwe
         try {
             soc = new Socket("127.0.0.1",7789);
             in = new BufferedReader(new InputStreamReader(soc.getInputStream()));
