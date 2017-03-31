@@ -1,4 +1,6 @@
-package Model;
+package Model.Networker;
+
+import Model.Model;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;

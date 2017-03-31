@@ -1,5 +1,7 @@
 package Model;
 
+import Model.Networker.Networker;
+
 import java.util.concurrent.LinkedBlockingQueue;
 
 /**
@@ -8,10 +10,12 @@ import java.util.concurrent.LinkedBlockingQueue;
 public class Model {
     Networker networker;
     LinkedBlockingQueue<String> queue;
+    Game game;
     public Thread t1;
     public Model(){
          queue =new LinkedBlockingQueue<String>();
         networker=new Networker(queue);
+        game= new TicTacToe(9);
     }
 
     public LinkedBlockingQueue<String> returnInstance(){
