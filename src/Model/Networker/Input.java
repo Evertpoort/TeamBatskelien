@@ -5,6 +5,7 @@ import Model.Model;
 import javax.swing.*;
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.util.concurrent.LinkedBlockingQueue;
 
 /**
  * Created by mark on 31-3-2017.
@@ -12,9 +13,11 @@ import java.io.IOException;
 public class Input implements Runnable  {
     BufferedReader in;
     JTextArea messageArea;
-    public Input(BufferedReader in,JTextArea messageArea){
+    LinkedBlockingQueue<String> queue2;
+    public Input(BufferedReader in, JTextArea messageArea, LinkedBlockingQueue<String> queue2){
     this.in = in;
     this.messageArea=messageArea;
+    this.queue2=queue2;
     }
     @Override
     public void run() {
@@ -24,6 +27,9 @@ public class Input implements Runnable  {
 
             try {
                 if ((line=in.readLine())!=null){
+                    if (line.startsWith("SVR")){
+                        queue2.offer(line);
+                    }
                     messageArea.append(line);
                     messageArea.append("\n");
                     messageArea.setCaretPosition(messageArea.getDocument().getLength());

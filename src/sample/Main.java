@@ -21,7 +21,6 @@ public class Main extends Application {
         this.model= new Model();
         this.view= new View(stage,model);
 
-
         view.screenController.active("LoginScreen");
         primaryStage.setTitle("Game");
         primaryStage.show();

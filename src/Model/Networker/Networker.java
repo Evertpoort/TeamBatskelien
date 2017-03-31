@@ -24,13 +24,15 @@ public class Networker {
    private BufferedReader in;
    private PrintWriter out;
    private LinkedBlockingQueue<String> queue;
+   private LinkedBlockingQueue<String> queue2;
     JFrame frame = new JFrame("Chatter");
     JTextField textField = new JTextField(40);
     JTextArea messageArea = new JTextArea(20, 40);
     JScrollPane jscroll= new JScrollPane(messageArea);
 
-    public Networker(LinkedBlockingQueue<String> queue){
+    public Networker(LinkedBlockingQueue<String> queue,LinkedBlockingQueue queue2){
     this.queue= queue;
+    this.queue2 = queue2;
     start();
     }
 
@@ -46,7 +48,7 @@ public class Networker {
             soc = new Socket("127.0.0.1",7789);
             in = new BufferedReader(new InputStreamReader(soc.getInputStream()));
             out = new PrintWriter(soc.getOutputStream(),true);
-            Thread t1= new Thread(new Input(in,messageArea));
+            Thread t1= new Thread(new Input(in,messageArea,queue2));
             t1.start();
             Thread t2= new Thread(new Output(out,queue,messageArea));
             t2.start();
