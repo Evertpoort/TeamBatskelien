@@ -20,4 +20,5 @@ public abstract class Game {
     public void move(int x, int y){
 
     }
+
 }
