@@ -5,6 +5,7 @@ import Model.Model;
 import View.View;
 import com.sun.javafx.sg.prism.NGShape;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;

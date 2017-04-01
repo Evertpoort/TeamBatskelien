@@ -14,6 +14,23 @@ import java.util.Objects;
 import java.util.concurrent.LinkedBlockingQueue;
 
 //hkeopiuhui
+
+/*
+    login <speler>          (String)        > Logs in the player
+    logout | exit | quit | disconnect | bye > Logs out the player
+    get gamelist                            > Returns a list of supported games
+    get playerlist                          > Returns a list of players
+
+    subscribe <speltype>    (Reversi / Tic-tac-toe) > Subscribes player to game type
+    move <zet>              (getal tussen 1-9)      > Executes move
+    forfeit                                         > Player forfeits game
+    challenge <player> <gametype>                   > Challenges <a> to play a game of <b>
+    ex. challenge "Eppo" "Tic-tac-toe" (case sensitive, requires "" around each argument)
+
+    challenge accept <uitdaging nummer>             > Accepts challenge
+ */
+
+
 public class Controller {
     public View view;
     private Model model;

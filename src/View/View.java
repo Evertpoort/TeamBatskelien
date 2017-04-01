@@ -2,6 +2,7 @@ package View;
 
 import Controller.Controller;
 import Model.Model;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -32,6 +33,7 @@ public class View {
         addScene("LoginScreen","../res/LoginScreen.fxml");
         addScene("GameScreen","../res/GameScreen.fxml");
         stage.setScene(new Scene(root));
+
     }
 
 
