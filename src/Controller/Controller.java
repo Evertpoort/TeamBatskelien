@@ -7,6 +7,7 @@ import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
 
 import java.awt.*;
@@ -54,6 +55,8 @@ public class Controller {
     ComboBox<String> combobox;
     @FXML
     private RadioButton radio2,radio1;
+    @FXML
+    private TextField login;
 
     public Controller(View view,Model model){
         this.view= view;
@@ -64,10 +67,15 @@ public class Controller {
     @FXML
     public void onEnter(ActionEvent event){
         // do login
-        String command=((javafx.scene.control.TextField) event.getSource()).getText();
+        String command= login.getText();
         queue.offer("Login "+ command);
         view.screenController.active("GameScreen");
        // System.out.println(queue.size());
+    }
+
+    @FXML
+    public void loginClick(ActionEvent event){
+        onEnter(event);
     }
 
     @FXML

@@ -23,11 +23,10 @@ public class Input implements Runnable  {
     public void run() {
         String line;
         while (true){
-
-
             try {
                 if ((line=in.readLine())!=null){
                     if (line.startsWith("SVR")){
+                        System.out.println(line);
                         queue2.offer(line);
                     }
                     messageArea.append(line);
@@ -39,5 +38,4 @@ public class Input implements Runnable  {
                 e.printStackTrace();
             }
         }}
-
 }
