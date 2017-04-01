@@ -71,8 +71,7 @@ public class Controller {
         // do login
         String command= login.getText();
         queue.offer("Login "+ command);
-        view.screenController.active("GameScreen");
-       // System.out.println(queue.size());
+        view.screenController.active("LobbyScreen");
     }
 
     @FXML
@@ -95,7 +94,7 @@ public class Controller {
 
     @FXML
     public void challegenebuttonclicked(ActionEvent event){
-        String command= "Challenge "+ "\"Dirk\""
+        String command= "Challenge "+ "\"Dirk\"" //still needs to be programmed
                 + "\""+ ((RadioButton)gamegroup.getSelectedToggle()).getText()+ "\""  ;
         System.out.println(command);
         queue.offer(command);
