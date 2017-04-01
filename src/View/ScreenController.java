@@ -28,4 +28,8 @@ public class ScreenController {
         screenMap.get(name).autosize();
         stage.sizeToScene();
     }
+    public void active(String name,Stage stage1,BorderPane pane1){
+        pane1.setCenter(screenMap.get(name));
+        stage1.sizeToScene();
+    }
 }
