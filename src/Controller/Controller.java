@@ -54,9 +54,11 @@ public class Controller {
     @FXML
     ComboBox<String> combobox;
     @FXML
-    private RadioButton radio2,radio1;
+    private RadioButton radiotype2,radiotype1,radiogame1,radiogame2;
     @FXML
     private TextField login;
+    @FXML
+    private ToggleGroup gamegroup,typegroup;
 
     public Controller(View view,Model model){
         this.view= view;
@@ -79,16 +81,23 @@ public class Controller {
     }
 
     @FXML
-    public void selectedgamebox(ActionEvent e){
-        String game = ((ComboBox)e.getSource()).getSelectionModel().getSelectedItem().toString();
-        if (game.equals("Tic-tac-toe")){
-            radio1.setText("Kruisje");
-            radio2.setText("Rondje");
+    public void gamegroupaction(ActionEvent event){
+        String word =((RadioButton)event.getSource()).getText();
+        if (word.equals("TicTacToe")){
+            radiotype1.setText("Kruisje");
+            radiotype2.setText("Rondje");
         }
-        else if(game.equals("Reversi")){
-            radio1.setText("Zwart");
-            radio2.setText("Wit");
+        else {
+            radiotype1.setText("Zwart");
+            radiotype2.setText("Wit");
         }
     }
 
+    @FXML
+    public void challegenebuttonclicked(ActionEvent event){
+        String command= "Challenge "+ "\"Dirk\""
+                + "\""+ ((RadioButton)gamegroup.getSelectedToggle()).getText()+ "\""  ;
+        System.out.println(command);
+        queue.offer(command);
+    }
 }

@@ -31,7 +31,7 @@ public class View {
 
 
         addScene("LoginScreen","../res/LoginScreen.fxml");
-        addScene("GameScreen","../res/GameScreen.fxml");
+        addScene("GameScreen","../res/ChallengeScreen.fxml");
         stage.setScene(new Scene(root));
 
     }
