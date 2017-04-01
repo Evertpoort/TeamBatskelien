@@ -18,16 +18,30 @@ import java.util.concurrent.LinkedBlockingQueue;
 /*
     login <speler>          (String)        > Logs in the player
     logout | exit | quit | disconnect | bye > Logs out the player
-    get gamelist                            > Returns a list of supported games
-    get playerlist                          > Returns a list of players
+            queue.offer("Logout");
 
-    subscribe <speltype>    (Reversi / Tic-tac-toe) > Subscribes player to game type
+    get gamelist                            > Returns a list of supported games
+            queue.offer("get gamelist");
+
+    get playerlist                          > Returns a list of players
+            queue.offer("get playerlist");
+
+    subscribe <speltype>    (Reversi / Tic-tac-toe) > Subscribes player to game type (case sensitive)
+                queue.offer("subscribe " + command);
+
     move <zet>              (getal tussen 1-9)      > Executes move
+                    queue.offer("move " + command);
+
     forfeit                                         > Player forfeits game
+                        queue.offer("forfeit");
+
     challenge <player> <gametype>                   > Challenges <a> to play a game of <b>
-    ex. challenge "Eppo" "Tic-tac-toe" (case sensitive, requires "" around each argument)
+    e.g. challenge "Eppo" "Tic-tac-toe" (case sensitive, requires "" around each argument)
+                        queue.offer("challenge " + command);
 
     challenge accept <uitdaging nummer>             > Accepts challenge
+                        queue.offer("challenge accept " + command);
+
  */
 
 
