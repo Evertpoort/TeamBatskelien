@@ -50,6 +50,7 @@ public class Controller {
     public View view;
     private Model model;
     private LinkedBlockingQueue<String> queue;
+    private LinkedBlockingQueue<String> queue1;
 
     @FXML
     ComboBox<String> combobox;
