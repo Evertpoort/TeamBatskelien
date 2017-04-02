@@ -23,4 +23,5 @@ public class Model {
     public LinkedBlockingQueue<String> returnInstance(){
         return queue;
     }
-}
+    public LinkedBlockingQueue<String> returnInputinstance(){return queue2;}
+ }

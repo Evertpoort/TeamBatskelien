@@ -26,7 +26,6 @@ import java.util.Objects;
 import java.util.ResourceBundle;
 import java.util.concurrent.LinkedBlockingQueue;
 
-//hkeopiuhui
 
 /*
     login <speler>          (String)        > Logs in the player
@@ -85,7 +84,8 @@ public class Controller implements Initializable {
         this.view= view;
         this.model=model;
         queue=model.returnInstance();
-
+        queue1= model.returnInputinstance();
+        Thread t1= new Thread(new InputHandler(this,view,queue1));
     }
 
     @FXML
