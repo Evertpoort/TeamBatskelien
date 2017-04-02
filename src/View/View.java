@@ -34,7 +34,6 @@ public class View {
         addScene("LobbyScreen","../res/LobbyScreen.fxml");
         addScene("ChallengeScreen","../res/ChallengeScreen.fxml");
         stage.setScene(new Scene(root));
-
     }
 
 
@@ -49,4 +48,6 @@ public class View {
             e.printStackTrace();
         }
     }
+
+
 }

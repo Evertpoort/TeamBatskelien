@@ -2,21 +2,28 @@ package Controller;
 
 import Model.Model;
 import View.View;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 import java.awt.*;
 import java.io.IOException;
+import java.net.URL;
 import java.util.Objects;
+import java.util.ResourceBundle;
 import java.util.concurrent.LinkedBlockingQueue;
 
 //hkeopiuhui
@@ -51,7 +58,7 @@ import java.util.concurrent.LinkedBlockingQueue;
  */
 
 
-public class Controller {
+public class Controller implements Initializable {
     public View view;
     private Model model;
     private LinkedBlockingQueue<String> queue;
@@ -65,11 +72,20 @@ public class Controller {
     private TextField login;
     @FXML
     private ToggleGroup gamegroup,typegroup;
+    @FXML
+    private TableView<Table> usertable;
+    @FXML
+    private TableColumn<Table,String> onlinecolumn;
+
+    final ObservableList<Table> data = FXCollections.observableArrayList(
+            new Table("Dirk")
+    );
 
     public Controller(View view,Model model){
         this.view= view;
         this.model=model;
         queue=model.returnInstance();
+
     }
 
     @FXML
@@ -78,6 +94,8 @@ public class Controller {
         String command= login.getText();
         queue.offer("Login "+ command);
         view.screenController.active("LobbyScreen");
+        onlinecolumn.setCellValueFactory(new PropertyValueFactory<Table, String>("playername"));
+        usertable.setItems(data);
     }
 
     @FXML
@@ -107,23 +125,23 @@ public class Controller {
     }
     @FXML
     public void refresh(ActionEvent event){
-        System.out.println("hi");
+        data.add(new Table("name2"));
     }
     @FXML
     public void openchallenge(ActionEvent event){
         final Stage popup= new Stage();
         BorderPane pane = new BorderPane();
-       // FXMLLoader loader = new FXMLLoader(getClass().getResource("../res/ChallengeScreen.fxml"));
-       // loader.setController(this);
-       // try {
-        //    pane.setCenter(loader.load());
-        //    popup.setScene(new Scene(pane));
-       // } catch (IOException e) {
-        //    e.printStackTrace();
-        //}
         view.screenController.active("ChallengeScreen",popup,pane);
         popup.setScene(new Scene(pane));
         popup.setTitle("Challenge");
         popup.show();
+    }
+    public TableView getUsertable(){
+        return usertable;
+    }
+
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+
     }
 }

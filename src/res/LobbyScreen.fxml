@@ -40,9 +40,9 @@
                   <Insets right="10.0" />
                </GridPane.margin>
             </Button>
-            <TableView prefHeight="200.0" prefWidth="200.0" GridPane.columnSpan="2147483647">
+            <TableView fx:id="usertable" prefHeight="200.0" prefWidth="200.0" GridPane.columnSpan="2147483647">
               <columns>
-                <TableColumn prefWidth="239.0" text="Online Users" />
+                <TableColumn fx:id="onlinecolumn" prefWidth="239.0" text="Online Users" />
               </columns>
             </TableView>
          </children>
