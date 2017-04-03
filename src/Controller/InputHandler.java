@@ -116,6 +116,7 @@ help [commando]		Help weergeven
                 controller.loadgame();
             }
                 //SVR GAME CHALLENGE {CHALLENGER: "wqegqwe", CHALLENGENUMBER: "0", GAMETYPE: "Tic-tac-toe"}
+            // needs some programming
                 else if (command.contains("CHALLENGENUMBER")){
                 Pattern p = Pattern.compile("\"([^\"]*)\"");
                 Matcher m = p.matcher(command);
