@@ -24,38 +24,91 @@ public class InputHandler implements Runnable {
         while (true){
             try {
                 String command=queue1.take();
+/*
+otes bij server antwoorden:
+Items tussen vierkante haken ('[' en ']') geven een lijst weer.
+Items tussen accolades ('{' en '}') geven een map weer. Zoals bij alle maps, is de volgorde niet bepaald.
+
+Notes bij client commando's:
+Alle commando's zijn niet hoofdlettergevoelig.
+Alle argumenten zijn niet hoofdlettergevoelig, m.u.v. namen van spelers en speltypes.
 
 
-                /*
-    login <speler>          (String)        > Logs in the player
-    logout | exit | quit | disconnect | bye > Logs out the player
-            queue.offer("Logout");
+Lijst opvragen met ondersteunde spellen:
+C: get gamelist
+S: OK
+S: SVR GAMELIST ["<speltype>", ...]
+->Lijst met spellen ontvangen.
 
-    get gamelist                            > Returns a list of supported games
-            queue.offer("get gamelist");
+Lijst opvragen met verbonden spelers:
+C: get playerlist
+S: OK
+S: SVR PLAYERLIST ["<speler>", ...]
+->Lijst met spelers ontvangen.
 
-    get playerlist                          > Returns a list of players
-            queue.offer("get playerlist");
+Match aangeboden krijgen, bericht naar beide spelers:
+S: SVR GAME MATCH {GAMTYPE: "<speltype>", PLAYERTOMOVE: "<naam speler1>", OPPONENT: "<naam tegenstander>"}
+->Nu bezig met een match, de inschrijving voor een speltype is vervallen.
 
-    subscribe <speltype>    (Reversi / Tic-tac-toe) > Subscribes player to game type (case sensitive)
-                queue.offer("subscribe " + command);
+De beurt toegewezen krijgen tijdens match:
+S: SVR GAME YOURTURN {TURNMESSAGE: "<bericht voor deze beurt>"}
+->Nu mogelijkheid een zet te doen.
 
-    move <zet>              (getal tussen 1-9)      > Executes move
-                    queue.offer("move " + command);
+Resultaat van een zet ontvangen, bericht naar beide spelers:
+S: SVR GAME MOVE {PLAYER: "<speler>", DETAILS: "<reactie spel op zet>", MOVE: "<zet>"}
+->Er is een zet gedaan, dit bericht geeft aan wie deze gezet heeft, wat de reactie van het spel erop is
 
-    forfeit                                         > Player forfeits game
-                        queue.offer("forfeit");
+Resultaat van een match ontvangen, bericht naar beide spelers:
+S: SVR GAME <speler resultaat> {PLAYERONESCORE: "<score speler1>", PLAYERTWOSCORE: "<score speler2>", COMMENT: "<commentaar op resultaat>"}
+->De match is afgelopen, <speler resultaat> kan de waarde 'WIN', 'LOSS' of 'DRAW' bevatten.
 
-    challenge <player> <gametype>                   > Challenges <a> to play a game of <b>
-    e.g. challenge "Eppo" "Tic-tac-toe" (case sensitive, requires "" around each argument)
-                        queue.offer("challenge " + command);
+Resultaat van een match die opgegeven is door een speler, bericht naar beide spelers:
+S: SVR GAME <speler resultaat> {PLAYERONESCORE: "<score speler1>", PLAYERTWOSCORE: "<score speler2>", COMMENT: "Player forfeited match"}
+->De match is afgelopen, <speler> heeft de match opgegeven.
 
-    challenge accept <uitdaging nummer>             > Accepts challenge
-                        queue.offer("challenge accept " + command);
+// save score and go b
+Resultaat van een match, speler heeft de verbinding verbroken:
+S: SVR GAME <speler resultaat> {PLAYERONESCORE: "<score speler1>", PLAYERTWOSCORE: "<score speler2>", COMMENT: "Client disconnected"}
+->De match is afgelopen, <speler> heeft de verbinding verbroken.
 
+//handle in controller
+Een uitdaging ontvangen:
+S: SVR GAME CHALLENGE {CHALLENGER: "Sjors", GAMETYPE: "Guess Game", CHALLENGENUMBER: "1"}
+->Nu mogelijkheid de uitdaging te accepteren.
+
+//not sure if needs to be handled..
+Resultaat van een uitdaging die is komen te vervallen:
+S: SVR GAME CHALLENGE CANCELLED {CHALLENGENUMBER: "<uitdaging nummer>"}
+->De uitdaging is vervallen. Mogelijke oorzaken: speler heeft een andere uitdaging gestart, speler is een match begonnen, speler heeft de verbinding verbroken.
+
+---------------------------------------------
+Overzicht van client-commando's:
+
+login				Aanmelden als speler
+logout | exit | quit | disconnect | bye
+					Uitloggen en verbinding verbreken
+get <gamelist | playerlist>
+					Opvragen van gegevens
+	gamelist		Opvragen van de lijst met ondersteunde speltypes
+	playerlist		Opvragen van de lijst met aangemelde spelers
+subscribe			Inschrijven voor een speltype
+move				Een zet doen tijdens een match
+challenge [accept]	Uitdagingen behandelen
+	accept			Uitdaging accepteren
+forfeit				De huidige match opgeven
+help [commando]		Help weergeven
  */
 
 
+                System.out.println(command);
+            if (command.contains("YOURTURN")){
+                //handle in the model
+            }
+            else if(command.contains("PLAYERLIST")){
+                command= command.substring(command.indexOf("[")+1,command.indexOf("]")).replace(", ","");
+                String[] list =command.split("\"");
+                controller.updateplayerlist(list);
+            }
 
 
 

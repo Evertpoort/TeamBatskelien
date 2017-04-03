@@ -68,6 +68,8 @@ public class Controller implements Initializable {
     @FXML
     private RadioButton radiotype2,radiotype1,radiogame1,radiogame2;
     @FXML
+    private CheckBox checkboxai;
+    @FXML
     private TextField login;
     @FXML
     private ToggleGroup gamegroup,typegroup;
@@ -77,7 +79,6 @@ public class Controller implements Initializable {
     private TableColumn<Table,String> onlinecolumn;
 
     final ObservableList<Table> data = FXCollections.observableArrayList(
-            new Table("Dirk")
     );
 
     public Controller(View view,Model model){
@@ -86,6 +87,7 @@ public class Controller implements Initializable {
         queue=model.returnInstance();
         queue1= model.returnInputinstance();
         Thread t1= new Thread(new InputHandler(this,view,queue1));
+        t1.start();
     }
 
     @FXML
@@ -93,6 +95,7 @@ public class Controller implements Initializable {
         // do login
         String command= login.getText();
         queue.offer("Login "+ command);
+        queue.offer("get playerlist");
         view.screenController.active("LobbyScreen");
         onlinecolumn.setCellValueFactory(new PropertyValueFactory<Table, String>("playername"));
         usertable.setItems(data);
@@ -106,11 +109,13 @@ public class Controller implements Initializable {
     @FXML
     public void gamegroupaction(ActionEvent event){
         String word =((RadioButton)event.getSource()).getText();
-        if (word.equals("TicTacToe")){
+        if (word.equals("Tic-tac-toe")){
             radiotype1.setText("Kruisje");
             radiotype2.setText("Rondje");
+            checkboxai.setDisable(true);
         }
         else {
+            checkboxai.setDisable(false);
             radiotype1.setText("Zwart");
             radiotype2.setText("Wit");
         }
@@ -125,7 +130,7 @@ public class Controller implements Initializable {
     }
     @FXML
     public void refresh(ActionEvent event){
-        data.add(new Table("name2"));
+        queue.offer("get playerlist");
     }
     @FXML
     public void openchallenge(ActionEvent event){
@@ -143,5 +148,15 @@ public class Controller implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
+    }
+
+    public void updateplayerlist(String[] list){
+        data.clear();
+        for (String i: list){
+            if (!i.equals("")){
+                System.out.println(i);
+                data.add(new Table(i));
+            }
+        }
     }
 }
