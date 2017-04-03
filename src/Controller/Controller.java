@@ -112,6 +112,14 @@ public class Controller {
         view.screenController.active("LobbyScreen");
         onlinecolumn.setCellValueFactory(new PropertyValueFactory<Table, String>("playername"));
         usertable.setItems(data);
+        usertable.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+        usertable.getSelectionModel().selectedIndexProperty().addListener((observable, oldValue, newValue) -> {
+            String selected =data.get(newValue.intValue()).getPlayername();
+            System.out.println(selected);
+            if (selected!= null){
+                selectedPlayer=data.get(newValue.intValue()).getPlayername();
+            }
+        });
     }
 
     @FXML
