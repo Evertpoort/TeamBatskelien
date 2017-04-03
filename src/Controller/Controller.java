@@ -146,7 +146,7 @@ public class Controller {
     public void challegenebuttonclicked(ActionEvent event){
         String command;
         if (randomqueue==false) {
-             command = "Challenge " + "\"Dirk\"" //still needs to be programmed
+             command = "Challenge " + "\"" + selectedPlayer +"\"" //still needs to be programmed
                     + "\"" + ((RadioButton) gamegroup.getSelectedToggle()).getText() + "\"";
 
         }

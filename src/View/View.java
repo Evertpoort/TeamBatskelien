@@ -33,11 +33,9 @@ public class View {
         addScene("LoginScreen","../res/LoginScreen.fxml");
         addScene("LobbyScreen","../res/LobbyScreen.fxml");
         addScene("ChallengeScreen","../res/ChallengeScreen.fxml");
+        addScene("GameScreen", "../res/GameScreen.fxml");
         stage.setScene(new Scene(root));
     }
-
-
-
 
     public void addScene(String name, String path){
         FXMLLoader loader = new FXMLLoader(getClass().getResource(path));
