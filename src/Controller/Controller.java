@@ -57,7 +57,7 @@ import java.util.concurrent.LinkedBlockingQueue;
  */
 
 
-public class Controller implements Initializable {
+public class Controller {
     public View view;
     private Model model;
     private LinkedBlockingQueue<String> queue;
@@ -80,6 +80,8 @@ public class Controller implements Initializable {
 
     final ObservableList<Table> data = FXCollections.observableArrayList(
     );
+    private  String selectedPlayer;
+    private boolean randomqueue= false;
 
     public Controller(View view,Model model){
         this.view= view;
@@ -88,6 +90,17 @@ public class Controller implements Initializable {
         queue1= model.returnInputinstance();
         Thread t1= new Thread(new InputHandler(this,view,queue1));
         t1.start();
+    }
+
+    @FXML
+    public void subscribebutton(ActionEvent event){
+        randomqueue=true;
+        final Stage popup= new Stage();
+        BorderPane pane = new BorderPane();
+        view.screenController.active("ChallengeScreen",popup,pane);
+        popup.setScene(new Scene(pane));
+        popup.setTitle("Challenge");
+        popup.show();
     }
 
     @FXML
@@ -123,8 +136,15 @@ public class Controller implements Initializable {
 
     @FXML
     public void challegenebuttonclicked(ActionEvent event){
-        String command= "Challenge "+ "\"Dirk\"" //still needs to be programmed
-                + "\""+ ((RadioButton)gamegroup.getSelectedToggle()).getText()+ "\""  ;
+        String command;
+        if (randomqueue==false) {
+             command = "Challenge " + "\"Dirk\"" //still needs to be programmed
+                    + "\"" + ((RadioButton) gamegroup.getSelectedToggle()).getText() + "\"";
+
+        }
+        else{
+             command = "subscribe " + ((RadioButton) gamegroup.getSelectedToggle()).getText();
+        }
         System.out.println(command);
         queue.offer(command);
     }
@@ -134,20 +154,13 @@ public class Controller implements Initializable {
     }
     @FXML
     public void openchallenge(ActionEvent event){
+        randomqueue= false;
         final Stage popup= new Stage();
         BorderPane pane = new BorderPane();
         view.screenController.active("ChallengeScreen",popup,pane);
         popup.setScene(new Scene(pane));
         popup.setTitle("Challenge");
         popup.show();
-    }
-    public TableView getUsertable(){
-        return usertable;
-    }
-
-    @Override
-    public void initialize(URL location, ResourceBundle resources) {
-
     }
 
     public void updateplayerlist(String[] list){
