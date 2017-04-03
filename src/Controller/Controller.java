@@ -84,6 +84,7 @@ public class Controller {
     );
     private  String selectedPlayer;
     private boolean randomqueue= false;
+    private int challengenumber;
 
     public Controller(View view,Model model){
         this.view= view;
@@ -197,7 +198,29 @@ public class Controller {
         Platform.runLater(() -> {
             view.screenController.active("GameScreen");
                 });
+    }
 
+    public void invitereceived(String name,int challengenumber, String game){
+        this.challengenumber=challengenumber;
+        Platform.runLater(() -> {
+        final Stage popup= new Stage();
+        BorderPane pane = new BorderPane();
+        view.screenController.active("GameInvite",popup,pane);
+        popup.setScene(new Scene(pane));
+        popup.setTitle("Challenge");
+        popup.show();
+        });
+    }
 
+    @FXML
+    public void inviteaccept(ActionEvent event){
+        queue.offer("challenge accept "+ challengenumber);
+        Stage stage = (Stage) ((Button) event.getSource()).getScene().getWindow();
+        stage.close();
+    }
+    @FXML
+    public void declineinvite(ActionEvent event){
+        Stage stage = (Stage) ((Button) event.getSource()).getScene().getWindow();
+        stage.close();
     }
 }

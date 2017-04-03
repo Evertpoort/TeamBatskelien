@@ -2,7 +2,11 @@ package Controller;
 
 import View.View;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by mark on 2-4-2017.
@@ -111,7 +115,17 @@ help [commando]		Help weergeven
            else if (command.contains("MATCH")){
                 controller.loadgame();
             }
-
+                //SVR GAME CHALLENGE {CHALLENGER: "wqegqwe", CHALLENGENUMBER: "0", GAMETYPE: "Tic-tac-toe"}
+                else if (command.contains("CHALLENGENUMBER")){
+                Pattern p = Pattern.compile("\"([^\"]*)\"");
+                Matcher m = p.matcher(command);
+                List list = new ArrayList();
+                while (m.find()) {
+                    System.out.println(m.group(1));
+                    list.add(m.group(1));
+                }
+               controller.invitereceived((String) list.get(0), Integer.parseInt((String) list.get(1)),(String) list.get(2));
+            }
 
             } catch (InterruptedException e) {
                 e.printStackTrace();
