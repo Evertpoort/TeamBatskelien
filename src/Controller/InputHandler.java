@@ -99,7 +99,6 @@ forfeit				De huidige match opgeven
 help [commando]		Help weergeven
  */
 
-
                 System.out.println(command);
             if (command.contains("YOURTURN")){
                 //handle in the model
@@ -109,19 +108,9 @@ help [commando]		Help weergeven
                 String[] list =command.split("\"");
                 controller.updateplayerlist(list);
             }
-
-
-
-
-
-
-
-
-
-
-
-
-
+           else if (command.contains("MATCH")){
+                controller.loadgame();
+            }
 
 
             } catch (InterruptedException e) {

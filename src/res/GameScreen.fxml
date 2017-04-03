@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.canvas.Canvas?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
@@ -7,12 +11,57 @@
 <GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1">
 
    <rowConstraints>
-      <RowConstraints maxHeight="42.0" minHeight="10.0" prefHeight="42.0" />
-      <RowConstraints maxHeight="59.0" minHeight="49.0" prefHeight="59.0" />
-      <RowConstraints maxHeight="40.0" minHeight="35.0" prefHeight="35.0" />
+      <RowConstraints maxHeight="42.0" minHeight="10.0" prefHeight="29.0" />
+      <RowConstraints maxHeight="72.0" minHeight="32.0" prefHeight="32.0" />
+      <RowConstraints />
+      <RowConstraints />
    </rowConstraints>
    <columnConstraints>
-      <ColumnConstraints maxWidth="195.0" minWidth="175.0" prefWidth="180.0" />
-      <ColumnConstraints maxWidth="203.0" minWidth="183.0" prefWidth="198.0" />
+      <ColumnConstraints maxWidth="202.0" minWidth="175.0" prefWidth="202.0" />
+      <ColumnConstraints maxWidth="203.0" minWidth="181.0" prefWidth="202.0" />
    </columnConstraints>
+   <children>
+      <Canvas fx:id="canvas" height="365.0" width="419.0" GridPane.columnSpan="2147483647" GridPane.rowIndex="2" />
+      <GridPane prefHeight="29.0" prefWidth="193.0">
+        <columnConstraints>
+          <ColumnConstraints hgrow="SOMETIMES" maxWidth="51.0" minWidth="22.0" prefWidth="32.0" />
+          <ColumnConstraints hgrow="SOMETIMES" maxWidth="180.0" minWidth="170.0" prefWidth="170.0" />
+        </columnConstraints>
+        <rowConstraints>
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+        </rowConstraints>
+         <children>
+            <Label text="Turn:">
+               <GridPane.margin>
+                  <Insets left="5.0" />
+               </GridPane.margin>
+            </Label>
+            <Label fx:id="TurnLabel" prefHeight="17.0" prefWidth="153.0" text=" You/Computer/Opponent" GridPane.columnIndex="1">
+               <GridPane.margin>
+                  <Insets />
+               </GridPane.margin>
+            </Label>
+         </children>
+      </GridPane>
+      <Label text="W: 0 L: 0" GridPane.columnIndex="1" GridPane.halignment="RIGHT">
+         <GridPane.margin>
+            <Insets right="5.0" />
+         </GridPane.margin>
+      </Label>
+      <Label text="Your score: 0" GridPane.rowIndex="1">
+         <GridPane.margin>
+            <Insets left="5.0" />
+         </GridPane.margin>
+      </Label>
+      <Label text="Oponent's score: 0" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="1">
+         <GridPane.margin>
+            <Insets right="5.0" />
+         </GridPane.margin>
+      </Label>
+      <Button mnemonicParsing="false" onAction="#giveupclicked" prefHeight="25.0" prefWidth="121.0" text="Give up" GridPane.columnSpan="2147483647" GridPane.halignment="CENTER" GridPane.rowIndex="3">
+         <GridPane.margin>
+            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+         </GridPane.margin>
+      </Button>
+   </children>
 </GridPane>

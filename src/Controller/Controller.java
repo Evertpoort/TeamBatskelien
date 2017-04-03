@@ -2,6 +2,7 @@ package Controller;
 
 import Model.Model;
 import View.View;
+import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -13,6 +14,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.BorderPane;
@@ -144,17 +146,22 @@ public class Controller {
 
     @FXML
     public void challegenebuttonclicked(ActionEvent event){
-        String command;
-        if (randomqueue==false) {
-             command = "Challenge " + "\"" + selectedPlayer +"\"" //still needs to be programmed
-                    + "\"" + ((RadioButton) gamegroup.getSelectedToggle()).getText() + "\"";
-
+        String command= "";
+        if (selectedPlayer==null){
+            System.out.println("No selected player");
         }
-        else{
-             command = "subscribe " + ((RadioButton) gamegroup.getSelectedToggle()).getText();
+        else {
+            if (randomqueue == false) {
+                command = "Challenge " + "\"" + selectedPlayer + "\""
+                        + "\"" + ((RadioButton) gamegroup.getSelectedToggle()).getText() + "\"";
+            } else {
+                command = "subscribe " + ((RadioButton) gamegroup.getSelectedToggle()).getText();
+            }
+            System.out.println(command);
+            queue.offer(command);
         }
-        System.out.println(command);
-        queue.offer(command);
+        Stage stage = (Stage) ((Button) event.getSource()).getScene().getWindow();
+        stage.close();
     }
     @FXML
     public void refresh(ActionEvent event){
@@ -179,5 +186,18 @@ public class Controller {
                 data.add(new Table(i));
             }
         }
+    }
+    @FXML
+    public void giveupclicked(ActionEvent event){
+        queue.offer("forfeit");
+        view.screenController.active("LobbyScreen");
+    }
+
+    public void loadgame(){
+        Platform.runLater(() -> {
+            view.screenController.active("GameScreen");
+                });
+
+
     }
 }
