@@ -26,7 +26,7 @@ public class View {
     private Cell[] list;
     private GraphicsContext gc;
 
-
+//bu
     public View(Stage stage, Model model) {
         this.stage = stage;
         this.root = new BorderPane();
@@ -67,7 +67,6 @@ public class View {
         double ypos= index/divider;
         double offsetx= canvas.getWidth()/divider*(index%divider);
         double offsety= canvas.getHeight()/divider*(index/divider);
-
-        //Rectangle r =new Rectangle(offsetx,offsety,)
+        gc.fillRect(xpos*offsetx,ypos*offsety,offsetx,offsety);
     }
 }
