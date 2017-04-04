@@ -15,6 +15,7 @@ public class Model {
     }
 
     public void makeGame(String type, Cell cellType) {
+
         if (type.equals("Reversi"))
             return;
         else if (type.equals("Tic-tac-toe"))

@@ -73,12 +73,10 @@ public class View {
         double divider= Math.sqrt(list.length);
         double xpos= index%divider;
         double ypos= Math.floor(index/divider);
-        System.out.print(xpos + ", ");
-        System.out.println(ypos);
-        System.out.println(index/divider);
         double offsetx= canvas.getWidth()/divider;
         double offsety= canvas.getHeight()/divider;
         double textheight= offsety/2;
+        System.out.println(cell);
         gc.setStroke(Color.DARKGREY);
 
         InnerShadow is = new InnerShadow();

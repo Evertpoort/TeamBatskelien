@@ -186,6 +186,15 @@ public class Controller {
             } else {
                 command = "subscribe " + ((RadioButton) gamegroup.getSelectedToggle()).getText();
             }
+
+            System.out.println(((RadioButton) typegroup.getSelectedToggle()).getText());
+                if (((RadioButton) typegroup.getSelectedToggle()).getText().equals("Kruisje")){
+                cellType =Cell.KRUISJE;
+            }
+            else if (((RadioButton) typegroup.getSelectedToggle()).getText().equals("Rondje")){
+                    cellType =Cell.RONDJE;
+                }
+
             //System.out.println(command);
             queue.offer(command);
         }
