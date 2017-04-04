@@ -1,8 +1,8 @@
 package Model;
 
 public class TicTacToe extends Game {
-    public TicTacToe(boolean playerTurn, Cell cellType){
-        super(new Board(3), playerTurn, cellType, cellType == Cell.KRUISJE ? Cell.RONDJE : Cell.KRUISJE, false);
+    public TicTacToe(Cell cellType){
+        super(new Board(3), cellType, cellType == Cell.KRUISJE ? Cell.RONDJE : Cell.KRUISJE, false);
     }
 
     @Override
@@ -17,12 +17,7 @@ public class TicTacToe extends Game {
             return false;
         }
         board.setCell(x, y, cellTypePlayer);
-        sendMove(x, y);
+        sendMoveToServer(x, y);
         return true;
-    }
-
-    public static void main(String[] args) { // Test
-        TicTacToe game = new TicTacToe(true, Cell.KRUISJE);
-        game.move(0, 0);
     }
 }
