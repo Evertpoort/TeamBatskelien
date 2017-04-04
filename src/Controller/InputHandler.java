@@ -106,6 +106,7 @@ help [commando]		Help weergeven
                 System.out.println(command);
             if (command.contains("YOURTURN")){
                 model.getGame().setPlayerTurn();
+                // if ai: do ai move + update GUI
             }
 
             else if(command.contains("PLAYERLIST")){
@@ -125,7 +126,6 @@ help [commando]		Help weergeven
                 }
                 controller.onupdate();
             }
-            //SVR GAME CHALLENGE {CHALLENGER: "wqegqwe", CHALLENGENUMBER: "0", GAMETYPE: "Tic-tac-toe"}
             else if (command.contains("CHALLENGENUMBER")&&!command.contains("CANCELLED")){
                 controller.invitereceived(args.get(0), Integer.parseInt(args.get(1)),args.get(2));
             }

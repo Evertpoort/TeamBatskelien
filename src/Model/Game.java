@@ -8,18 +8,30 @@ public abstract class Game {
     boolean playerTurn = false;
     Cell cellTypePlayer;
     Cell cellTypeOpponent;
-    boolean AI;
+    int size;
 
-    public Game(LinkedBlockingQueue<String> outPutQueue, Board board, Cell cellTypePlayer, Cell cellTypeOpponent , boolean AI) {
+    public Game(LinkedBlockingQueue<String> outPutQueue, int size, Cell cellTypePlayer, Cell cellTypeOpponent) {
         this.outputQueue = outPutQueue;
-        this.board = board;
+        this.size = size;
+        this.board = new Board(size);
         this.cellTypePlayer = cellTypePlayer;
         this.cellTypeOpponent = cellTypeOpponent;
-        this.AI = AI;
     }
 
-    public void sendMoveToServer(int x, int y) {
-        return;
+    private int getIndex(int x, int y) {
+        return y * size + x;
+    }
+
+    private int getX(int index) {
+        return index % size;
+    }
+
+    private int getY(int index) {
+        return index / size;
+    }
+
+    public void sendMoveToServer(int index) {
+        outputQueue.add("move " + index);
     }
 
     public Cell[] getBoard() {
@@ -35,6 +47,10 @@ public abstract class Game {
     }
 
     public boolean move(int x, int y) {
+        return move(getIndex(x, y));
+    }
+
+    public boolean move(int index) {
         return false;
     }
 
