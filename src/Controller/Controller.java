@@ -21,6 +21,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
@@ -145,7 +146,7 @@ public class Controller {
         usertable.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         usertable.getSelectionModel().selectedIndexProperty().addListener((observable, oldValue, newValue) -> {
             String selected =data.get(newValue.intValue()).getPlayername();
-            System.out.println(selected);
+            //System.out.println(selected);
             if (selected!= null){
                 selectedPlayer=data.get(newValue.intValue()).getPlayername();
             }
@@ -185,7 +186,7 @@ public class Controller {
             } else {
                 command = "subscribe " + ((RadioButton) gamegroup.getSelectedToggle()).getText();
             }
-            System.out.println(command);
+            //System.out.println(command);
             queue.offer(command);
         }
         Stage stage = (Stage) ((Button) event.getSource()).getScene().getWindow();
@@ -207,10 +208,10 @@ public class Controller {
     }
 
     public void updateplayerlist(String[] list){
-        data.removeAll();
+        data.clear();
         for (String i: list){
             if (!i.equals("")){
-                System.out.println(i);
+                //System.out.println(i);
                 data.add(new Table(i));
             }
         }
@@ -224,6 +225,19 @@ public class Controller {
     public void loadgame(){
         Platform.runLater(() -> {
             view.screenController.active("GameScreen");
+
+            canvas.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent event) {
+                    Cell[] list =model.getGame().getBoard();
+                    int length= (int) Math.sqrt(list.length);
+                    double x =canvas.getWidth()/length;
+                    double y = canvas.getHeight()/length;
+
+                    model.getGame().move((int)(event.getX()/x),(int) (event.getY()/y));
+                    //System.out.println(event.getX()+ ","+ event.getY());
+                }
+            });
                 });
     }
 
@@ -253,7 +267,7 @@ public class Controller {
     }
 
     public void onupdate(){
-        //view.drawcanvas(Canvas canvas)
+        view.drawcanvas(canvas,model.getGame().getBoard());
     }
 
 }

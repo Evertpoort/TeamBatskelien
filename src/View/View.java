@@ -6,11 +6,18 @@ import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.VPos;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.effect.InnerShadow;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.*;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontSmoothingType;
+import javafx.scene.text.FontWeight;
+import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 
 import java.lang.Math;
@@ -62,11 +69,50 @@ public class View {
 
 
     public void draw(Canvas canvas,int index, Cell[] list) {
+        Cell cell = list[index];
         double divider= Math.sqrt(list.length);
         double xpos= index%divider;
-        double ypos= index/divider;
-        double offsetx= canvas.getWidth()/divider*(index%divider);
-        double offsety= canvas.getHeight()/divider*(index/divider);
+        double ypos= Math.floor(index/divider);
+        System.out.print(xpos + ", ");
+        System.out.println(ypos);
+        System.out.println(index/divider);
+        double offsetx= canvas.getWidth()/divider;
+        double offsety= canvas.getHeight()/divider;
+        double textheight= offsety/2;
+        gc.setStroke(Color.DARKGREY);
+
+        InnerShadow is = new InnerShadow();
+        is.setOffsetX(2);
+        is.setOffsetY(2);
+        is.setColor(Color.DIMGREY);
+        gc.setEffect(is);
+        gc.setFill(Color.ALICEBLUE);
         gc.fillRect(xpos*offsetx,ypos*offsety,offsetx,offsety);
+        gc.setEffect(null);
+
+
+        gc.setFill(Color.BLACK);
+        gc.setFontSmoothingType(FontSmoothingType.LCD);
+        gc.setFont(Font.font("Helvetica", FontWeight.BOLD, textheight));
+        gc.setTextAlign(TextAlignment.CENTER);
+        gc.setTextBaseline(VPos.CENTER);
+        String character = "";
+
+        if (cell==Cell.WIT){
+
+        }
+        else if (cell==Cell.ZWART){
+
+        }
+        else if (cell==Cell.KRUISJE){
+            character="X";
+        }
+        else if (cell==Cell.RONDJE){
+        character="O";
+        }
+        else{
+
+        }
+        gc.fillText(character,xpos*offsetx+offsetx/2,ypos*offsety+offsety/2);
     }
 }

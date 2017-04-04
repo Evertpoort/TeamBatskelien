@@ -116,12 +116,14 @@ help [commando]		Help weergeven
             else if (command.contains("MATCH")){
                 model.makeGame(args.get(1), controller.getPlayerCellType());
                 controller.loadgame();
+                controller.onupdate();
             }
             else if (command.contains("MOVE")){
                 if (!args.get(0).equals(controller.getPlayerName())) {
                     model.getGame().opponentMove(Integer.parseInt(args.get(1)));
                     // GUI updaten
                 }
+                controller.onupdate();
             }
             //SVR GAME CHALLENGE {CHALLENGER: "wqegqwe", CHALLENGENUMBER: "0", GAMETYPE: "Tic-tac-toe"}
             else if (command.contains("CHALLENGENUMBER")&&!command.contains("CANCELLED")){
