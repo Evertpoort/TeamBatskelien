@@ -4,9 +4,6 @@ import Model.Networker.Networker;
 
 import java.util.concurrent.LinkedBlockingQueue;
 
-/**
- * Created by mark on 31-3-2017.
- */
 public class Model {
     Networker networker;
     LinkedBlockingQueue<String> queue;
@@ -14,10 +11,10 @@ public class Model {
     Game game;
     public Thread t1;
     public Model(){
-         queue =new LinkedBlockingQueue<String>();
+        queue =new LinkedBlockingQueue<String>();
         queue2 = new LinkedBlockingQueue<String>();
         networker=new Networker(queue,queue2);
-        game= new TicTacToe(9);
+        game= new TicTacToe(false, Cell.KRUISJE);
     }
 
     public LinkedBlockingQueue<String> returnInstance(){

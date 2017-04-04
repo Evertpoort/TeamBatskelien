@@ -1,0 +1,27 @@
+*.class
+*.ctxt
+*.bluej
+*.tmp
+*.metadata
+tmp/
+bin/
+*.bak
+*.swp
+*~.nib
+
+# Eclipse
+.classpath
+.project
+.settings/
+.loadpath
+.recommenders
+local.properties
+*.launch
+
+# Intellij
+.idea/
+*.iml
+*.iws
+.idea_modules/
+/out/
+

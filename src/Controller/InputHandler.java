@@ -4,9 +4,6 @@ import View.View;
 
 import java.util.concurrent.LinkedBlockingQueue;
 
-/**
- * Created by mark on 2-4-2017.
- */
 public class InputHandler implements Runnable {
     Controller controller;
     View view;

@@ -7,9 +7,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.concurrent.LinkedBlockingQueue;
 
-/**
- * Created by mark on 31-3-2017.
- */
 public class Input implements Runnable  {
     BufferedReader in;
     JTextArea messageArea;

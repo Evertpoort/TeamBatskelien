@@ -12,9 +12,6 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 
-/**
- * Created by mark on 30-3-2017.
- */
 public class View {
     private Stage stage;
     public ScreenController screenController;
