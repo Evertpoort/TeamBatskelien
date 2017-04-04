@@ -1,6 +1,7 @@
 package Controller;
 
 import Model.Model;
+import Model.Cell;
 import View.View;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
@@ -89,17 +90,36 @@ public class Controller {
 
     final ObservableList<Table> data = FXCollections.observableArrayList(
     );
-    private  String selectedPlayer;
+    private String selectedPlayer;
     private boolean randomqueue= false;
     private int challengenumber;
+    private String playerName;
+    private String opponentName;
+    private Cell cellType;
 
     public Controller(View view,Model model){
         this.view= view;
         this.model=model;
         queue=model.returnInstance();
         queue1= model.returnInputinstance();
-        Thread t1= new Thread(new InputHandler(this,view,queue1));
+        Thread t1= new Thread(new InputHandler(this,model,view,queue1));
         t1.start();
+    }
+
+    public String getPlayerName() {
+        return playerName;
+    }
+
+    public Cell getPlayerCellType() {
+        return cellType;
+    }
+
+    public String getOpponentName() {
+        return opponentName;
+    }
+
+    public void setOpponentName(String opponentName) {
+        this.opponentName = opponentName;
     }
 
     @FXML

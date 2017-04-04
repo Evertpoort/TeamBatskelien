@@ -29,4 +29,8 @@ public class Board {
     public void setCell(int x, int y, Cell cell) {
         board[getIndex(x, y)] = cell;
     }
+
+    public void setCell(int index, Cell cell) {
+        board[index] = cell;
+    }
 }

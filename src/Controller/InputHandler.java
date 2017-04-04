@@ -1,7 +1,7 @@
 package Controller;
 
 import View.View;
-
+import Model.Model;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -11,11 +11,13 @@ import java.util.regex.Pattern;
 public class InputHandler implements Runnable {
     Controller controller;
     View view;
+    Model model;
     LinkedBlockingQueue<String> queue1;
 
-    public InputHandler(Controller controller, View view, LinkedBlockingQueue<String> queue1){
+    public InputHandler(Controller controller, Model model, View view, LinkedBlockingQueue<String> queue1){
         this.controller= controller;
         this.view=view;
+        this.model=model;
         this.queue1=queue1;
     }
     @Override
@@ -25,6 +27,7 @@ public class InputHandler implements Runnable {
         while (true){
             try {
                 String command=queue1.take();
+                ArrayList<String> args = parseArgs(command);
 /*
 otes bij server antwoorden:
 Items tussen vierkante haken ('[' en ']') geven een lijst weer.
@@ -102,7 +105,7 @@ help [commando]		Help weergeven
 
                 System.out.println(command);
             if (command.contains("YOURTURN")){
-                //handle in the model
+                model.getGame().setPlayerTurn();
             }
 
             else if(command.contains("PLAYERLIST")){
@@ -110,24 +113,34 @@ help [commando]		Help weergeven
                 String[] list =command.split("\"");
                 controller.updateplayerlist(list);
             }
-           else if (command.contains("MATCH")){
+            else if (command.contains("MATCH")){
+                model.makeGame(args.get(1), controller.getPlayerCellType());
                 controller.loadgame();
             }
-                //SVR GAME CHALLENGE {CHALLENGER: "wqegqwe", CHALLENGENUMBER: "0", GAMETYPE: "Tic-tac-toe"}
-            // needs some programming
-                else if (command.contains("CHALLENGENUMBER")&&!command.contains("CANCELLED")){
-                Pattern p = Pattern.compile("\"([^\"]*)\"");
-                Matcher m = p.matcher(command);
-                List list = new ArrayList();
-                while (m.find()) {
-                    System.out.println(m.group(1));
-                    list.add(m.group(1));
+            else if (command.contains("MOVE")){
+                if (!args.get(0).equals(controller.getPlayerName())) {
+                    model.getGame().opponentMove(Integer.parseInt(args.get(1)));
+                    // GUI updaten
                 }
-               controller.invitereceived((String) list.get(0), Integer.parseInt((String) list.get(1)),(String) list.get(2));
+            }
+            //SVR GAME CHALLENGE {CHALLENGER: "wqegqwe", CHALLENGENUMBER: "0", GAMETYPE: "Tic-tac-toe"}
+            else if (command.contains("CHALLENGENUMBER")&&!command.contains("CANCELLED")){
+                controller.invitereceived(args.get(0), Integer.parseInt(args.get(1)),args.get(2));
             }
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
+    }
+
+    private ArrayList<String> parseArgs(String args) {
+        Pattern p = Pattern.compile("\"([^\"]*)\"");
+        Matcher m = p.matcher(args);
+        ArrayList<String> list = new ArrayList<>();
+        while (m.find()) {
+            System.out.println(m.group(1));
+            list.add(m.group(1));
+        }
+        return list;
     }
 }
