@@ -107,6 +107,7 @@ help [commando]		Help weergeven
             if (command.contains("YOURTURN")){
                 //handle in the model
             }
+
             else if(command.contains("PLAYERLIST")){
                 command= command.substring(command.indexOf("[")+1,command.indexOf("]")).replace(", ","");
                 String[] list =command.split("\"");
@@ -117,7 +118,7 @@ help [commando]		Help weergeven
             }
                 //SVR GAME CHALLENGE {CHALLENGER: "wqegqwe", CHALLENGENUMBER: "0", GAMETYPE: "Tic-tac-toe"}
             // needs some programming
-                else if (command.contains("CHALLENGENUMBER")){
+                else if (command.contains("CHALLENGENUMBER")&&!command.contains("CANCELLED")){
                 Pattern p = Pattern.compile("\"([^\"]*)\"");
                 Matcher m = p.matcher(command);
                 List list = new ArrayList();
@@ -127,7 +128,6 @@ help [commando]		Help weergeven
                 }
                controller.invitereceived((String) list.get(0), Integer.parseInt((String) list.get(1)),(String) list.get(2));
             }
-
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

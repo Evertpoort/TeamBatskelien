@@ -13,8 +13,11 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
+import javafx.scene.canvas.*;
+import javafx.scene.canvas.Canvas;
 import javafx.scene.control.*;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.BorderPane;
@@ -79,6 +82,10 @@ public class Controller {
     private TableView<Table> usertable;
     @FXML
     private TableColumn<Table,String> onlinecolumn;
+    @FXML
+    private Label invitelabel;
+    @FXML
+    private javafx.scene.canvas.Canvas canvas;
 
     final ObservableList<Table> data = FXCollections.observableArrayList(
     );
@@ -180,7 +187,7 @@ public class Controller {
     }
 
     public void updateplayerlist(String[] list){
-        data.clear();
+        data.removeAll();
         for (String i: list){
             if (!i.equals("")){
                 System.out.println(i);
@@ -200,9 +207,10 @@ public class Controller {
                 });
     }
 
-    public void invitereceived(String name,int challengenumber, String game){
+    public void invitereceived(String playername,int challengenumber, String game){
         this.challengenumber=challengenumber;
         Platform.runLater(() -> {
+        invitelabel.setText(playername +" has invited you to a game of " + game);
         final Stage popup= new Stage();
         BorderPane pane = new BorderPane();
         view.screenController.active("GameInvite",popup,pane);
@@ -223,4 +231,9 @@ public class Controller {
         Stage stage = (Stage) ((Button) event.getSource()).getScene().getWindow();
         stage.close();
     }
+
+    public void onupdate(){
+        //view.drawcanvas(Canvas canvas)
+    }
+
 }
