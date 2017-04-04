@@ -1,25 +1,23 @@
 package Model;
 
-import java.util.List;
-import java.lang.Math.*;
-
-import static java.lang.Math.sqrt;
-
-/**
- * Created by mark on 31-3-2017.
- */
 public class TicTacToe extends Game {
-
-    public TicTacToe(int size){
-        board= boardCreator(size);
-
+    public TicTacToe(Cell cellType){
+        super(new Board(3), cellType, cellType == Cell.KRUISJE ? Cell.RONDJE : Cell.KRUISJE, false);
     }
 
-
-    public Cell[][] boardCreator(int size){
-        int arraysize=(int)(sqrt(size));
-        Cell[][] mylist = new Cell[arraysize][arraysize];
-        //for
-        return mylist;
+    @Override
+    public boolean move(int x, int y) {
+        if (!playerTurn) {
+            System.out.println("It's not your turn!");
+            return false;
+        }
+        playerTurn = true;
+        if (board.getCell(x, y) != Cell.EMPTY) {
+            System.out.println("Cell not empty!");
+            return false;
+        }
+        board.setCell(x, y, cellTypePlayer);
+        sendMoveToServer(x, y);
+        return true;
     }
 }

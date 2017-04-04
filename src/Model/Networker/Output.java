@@ -6,9 +6,6 @@ import javax.swing.*;
 import java.io.PrintWriter;
 import java.util.concurrent.LinkedBlockingQueue;
 
-/**
- * Created by mark on 31-3-2017.
- */
 public class Output implements Runnable {
     private PrintWriter out;
     private LinkedBlockingQueue<String> queue;

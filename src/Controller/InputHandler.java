@@ -8,9 +8,6 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-/**
- * Created by mark on 2-4-2017.
- */
 public class InputHandler implements Runnable {
     Controller controller;
     View view;

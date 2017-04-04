@@ -7,9 +7,6 @@ import javafx.stage.Stage;
 
 import java.util.HashMap;
 
-/**
- * Created by mark on 30-3-2017.
- */
 //http://stackoverflow.com/questions/37200845/how-to-switch-scenes-in-javafx
 public class ScreenController {
     private HashMap<String,Pane> screenMap= new HashMap<>();

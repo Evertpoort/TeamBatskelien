@@ -16,9 +16,6 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 //sourec  http://cs.lmu.edu/~ray/notes/javanetexamples/
 
-/**
- * Created by mark on 24-3-2017.
- */
 public class Networker {
    private  Socket soc;
    private BufferedReader in;
