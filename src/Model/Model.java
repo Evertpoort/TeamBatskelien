@@ -11,7 +11,7 @@ public class Model {
     public Model(){
         inputQueue = new LinkedBlockingQueue<String>();
         outputQueue = new LinkedBlockingQueue<String>();
-        networker = new Networker(inputQueue,outputQueue);
+        networker = new Networker(outputQueue,inputQueue);
     }
 
     public void makeGame(String type, Cell cellType) {
@@ -28,7 +28,7 @@ public class Model {
     }
 
     public LinkedBlockingQueue<String> returnInstance(){
-        return inputQueue;
+        return outputQueue;
     }
-    public LinkedBlockingQueue<String> returnInputinstance(){return outputQueue;}
+    public LinkedBlockingQueue<String> returnInputinstance(){return inputQueue;}
 }

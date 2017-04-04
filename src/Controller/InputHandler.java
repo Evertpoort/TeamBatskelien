@@ -102,8 +102,6 @@ challenge [accept]	Uitdagingen behandelen
 forfeit				De huidige match opgeven
 help [commando]		Help weergeven
  */
-
-                System.out.println(command);
             if (command.contains("YOURTURN")){
                 model.getGame().setPlayerTurn();
                 // if ai: do ai move + update GUI
@@ -128,6 +126,8 @@ help [commando]		Help weergeven
             }
             else if (command.contains("CHALLENGENUMBER")&&!command.contains("CANCELLED")){
                 controller.invitereceived(args.get(0), Integer.parseInt(args.get(1)),args.get(2));
+            } else {
+                System.out.println("Unknown command received: " + command);
             }
             } catch (InterruptedException e) {
                 e.printStackTrace();
