@@ -138,20 +138,24 @@ public class Controller {
     public void onEnter(ActionEvent event){
         // do login
         String name = login.getText();
-        playerName = name;
-        queue.offer("Login "+ name);
-        queue.offer("get playerlist");
-        view.screenController.active("LobbyScreen");
-        onlinecolumn.setCellValueFactory(new PropertyValueFactory<Table, String>("playername"));
-        usertable.setItems(data);
-        usertable.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
-        usertable.getSelectionModel().selectedIndexProperty().addListener((observable, oldValue, newValue) -> {
-            String selected =data.get(newValue.intValue()).getPlayername();
-            //System.out.println(selected);
-            if (selected!= null){
-                selectedPlayer=data.get(newValue.intValue()).getPlayername();
-            }
-        });
+        if (!name.equals("")) {
+            playerName = name;
+            queue.offer("Login " + name);
+            queue.offer("get playerlist");
+            view.screenController.active("LobbyScreen");
+            onlinecolumn.setCellValueFactory(new PropertyValueFactory<Table, String>("playername"));
+            usertable.setItems(data);
+            usertable.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+            usertable.getSelectionModel().selectedIndexProperty().addListener((observable, oldValue, newValue) -> {
+                if (newValue.intValue() >= 0) {
+                    String selected = data.get(newValue.intValue()).getPlayername();
+                    //System.out.println(selected);
+                    if (selected != null) {
+                        selectedPlayer = data.get(newValue.intValue()).getPlayername();
+                    }
+                }
+            });
+        }
     }
 
     @FXML
@@ -177,7 +181,7 @@ public class Controller {
     @FXML
     public void challegenebuttonclicked(ActionEvent event){
         String command= "";
-        if (selectedPlayer==null){
+        if (selectedPlayer==null&&randomqueue==false){
             System.out.println("No selected player");
         }
         else {

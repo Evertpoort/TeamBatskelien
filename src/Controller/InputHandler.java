@@ -140,7 +140,7 @@ help [commando]		Help weergeven
         Matcher m = p.matcher(args);
         ArrayList<String> list = new ArrayList<>();
         while (m.find()) {
-            System.out.println(m.group(1));
+            //System.out.println(m.group(1));
             list.add(m.group(1));
         }
         return list;
