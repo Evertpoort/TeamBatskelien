@@ -18,6 +18,10 @@ public class Board {
         Arrays.fill(this.board, Cell.EMPTY);
     }
 
+    public Cell[] getCells() {
+        return board;
+    }
+
     public Cell getCell(int x, int y) {
         return board[getIndex(x, y)];
     }

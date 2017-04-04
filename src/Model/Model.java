@@ -14,7 +14,6 @@ public class Model {
         queue =new LinkedBlockingQueue<String>();
         queue2 = new LinkedBlockingQueue<String>();
         networker=new Networker(queue,queue2);
-        game= new TicTacToe(false, Cell.KRUISJE);
     }
 
     public LinkedBlockingQueue<String> returnInstance(){

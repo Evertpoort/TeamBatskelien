@@ -2,24 +2,21 @@ package Model;
 
 public abstract class Game {
     public Board board;
-    public GameState state;
+    public boolean playerTurn;
     public Cell cellTypePlayer;
     public Cell cellTypeOpponent;
     public boolean AI;
 
     public Game(Board board, boolean playerTurn, Cell cellTypePlayer, Cell cellTypeOpponent , boolean AI) {
         this.board = board;
-        if (playerTurn)
-            this.state = GameState.PLAYER_TURN;
-        else
-            this.state = GameState.OPPONENT_TURN;
+        this.playerTurn = playerTurn;
         this.cellTypePlayer = cellTypePlayer;
         this.cellTypeOpponent = cellTypeOpponent;
         this.AI = AI;
     }
 
-    public GameState getGameState() {
-        return state;
+    public Cell[] getBoard() {
+        return board.getCells();
     }
 	
 	public void sendMove(int x, int y) {
