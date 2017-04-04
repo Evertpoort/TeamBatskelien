@@ -29,15 +29,15 @@
             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
          </rowConstraints>
          <children>
-            <RadioButton fx:id="radiotype1" mnemonicParsing="false" prefWidth="74.0" selected="true" text="Kruisje" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
+            <RadioButton mnemonicParsing="false" selected="true" text="Kruisje" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
                <GridPane.margin>
                   <Insets />
                </GridPane.margin>
                <toggleGroup>
-                  <ToggleGroup fx:id="typegroup" />
+                  <ToggleGroup fx:id="typegroup2" />
                </toggleGroup>
             </RadioButton>
-            <RadioButton fx:id="radiotype2" mnemonicParsing="false" text="Rondje" toggleGroup="$typegroup" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER">
+            <RadioButton mnemonicParsing="false" text="Rondje" toggleGroup="$typegroup2" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER">
                <GridPane.margin>
                   <Insets />
                </GridPane.margin>

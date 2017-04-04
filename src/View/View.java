@@ -76,7 +76,7 @@ public class View {
         double offsetx= canvas.getWidth()/divider;
         double offsety= canvas.getHeight()/divider;
         double textheight= offsety/2;
-        System.out.println(cell);
+        //System.out.println(cell);
         gc.setStroke(Color.DARKGREY);
 
         InnerShadow is = new InnerShadow();

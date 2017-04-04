@@ -79,7 +79,7 @@ public class Controller {
     @FXML
     private TextField login;
     @FXML
-    private ToggleGroup gamegroup,typegroup;
+    private ToggleGroup gamegroup,typegroup,typegroup2;
     @FXML
     private TableView<Table> usertable;
     @FXML
@@ -267,10 +267,10 @@ public class Controller {
     @FXML
     public void inviteaccept(ActionEvent event){
         queue.offer("challenge accept "+ challengenumber);
-        if (((RadioButton) typegroup.getSelectedToggle()).getText().equals("Kruisje")){
+        if (((RadioButton) typegroup2.getSelectedToggle()).getText().equals("Kruisje")){
             cellType =Cell.KRUISJE;
         }
-        else if (((RadioButton) typegroup.getSelectedToggle()).getText().equals("Rondje")){
+        else if (((RadioButton) typegroup2.getSelectedToggle()).getText().equals("Rondje")){
             cellType =Cell.RONDJE;
         }
 
