@@ -1,13 +1,17 @@
 package Model;
 
-public abstract class Game {
-    public Board board;
-    public boolean playerTurn = false;
-    public Cell cellTypePlayer;
-    public Cell cellTypeOpponent;
-    public boolean AI;
+import java.util.concurrent.LinkedBlockingQueue;
 
-    public Game(Board board, Cell cellTypePlayer, Cell cellTypeOpponent , boolean AI) {
+public abstract class Game {
+    LinkedBlockingQueue<String> outputQueue;
+    Board board;
+    boolean playerTurn = false;
+    Cell cellTypePlayer;
+    Cell cellTypeOpponent;
+    boolean AI;
+
+    public Game(LinkedBlockingQueue<String> outPutQueue, Board board, Cell cellTypePlayer, Cell cellTypeOpponent , boolean AI) {
+        this.outputQueue = outPutQueue;
         this.board = board;
         this.cellTypePlayer = cellTypePlayer;
         this.cellTypeOpponent = cellTypeOpponent;
@@ -26,8 +30,8 @@ public abstract class Game {
         playerTurn = true;
     }
 
-    public void opponentMove(int x, int y) {
-        board.setCell(x, y, cellTypeOpponent);
+    public void opponentMove(int index) {
+        board.setCell(index, cellTypeOpponent);
     }
 
     public boolean move(int x, int y) {
