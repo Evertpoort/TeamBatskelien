@@ -137,8 +137,9 @@ public class Controller {
     @FXML
     public void onEnter(ActionEvent event){
         // do login
-        String command= login.getText();
-        queue.offer("Login "+ command);
+        String name = login.getText();
+        playerName = name;
+        queue.offer("Login "+ name);
         queue.offer("get playerlist");
         view.screenController.active("LobbyScreen");
         onlinecolumn.setCellValueFactory(new PropertyValueFactory<Table, String>("playername"));
@@ -266,6 +267,13 @@ public class Controller {
     @FXML
     public void inviteaccept(ActionEvent event){
         queue.offer("challenge accept "+ challengenumber);
+        if (((RadioButton) typegroup.getSelectedToggle()).getText().equals("Kruisje")){
+            cellType =Cell.KRUISJE;
+        }
+        else if (((RadioButton) typegroup.getSelectedToggle()).getText().equals("Rondje")){
+            cellType =Cell.RONDJE;
+        }
+
         Stage stage = (Stage) ((Button) event.getSource()).getScene().getWindow();
         stage.close();
     }

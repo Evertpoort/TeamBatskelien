@@ -31,7 +31,7 @@ public abstract class Game {
     }
 
     public void sendMoveToServer(int index) {
-        outputQueue.add("move " + index);
+        outputQueue.offer("move " + index);
     }
 
     public Cell[] getBoard() {
