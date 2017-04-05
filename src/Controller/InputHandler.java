@@ -120,7 +120,6 @@ help [commando]		Help weergeven
             else if (command.contains("MOVE")){
                 if (!args.get(0).equals(controller.getPlayerName())) {
                     model.getGame().opponentMove(Integer.parseInt(args.get(1)));
-                    // GUI updaten
                 }
                 controller.onupdate();
             }
