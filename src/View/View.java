@@ -52,7 +52,9 @@ public class View {
 
     public void addScene(String name, String path) {
         FXMLLoader loader = new FXMLLoader(getClass().getResource(path));
-        loader.setController(controller);
+        if (loader.getController()==null){
+            loader.setController(controller);
+        }
         try {
             screenController.add(name, loader.load());
         } catch (IOException e) {
@@ -77,7 +79,6 @@ public class View {
         double offsetx= canvas.getWidth()/divider;
         double offsety= canvas.getHeight()/divider;
         double textheight= offsety/2;
-        //System.out.println(cell);
         gc.setStroke(Color.DARKGREY);
 
         InnerShadow is = new InnerShadow();

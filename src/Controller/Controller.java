@@ -73,7 +73,7 @@ public class Controller {
     @FXML
     ComboBox<String> combobox;
     @FXML
-    private RadioButton radiotype2,radiotype1,radiogame1,radiogame2;
+    private RadioButton radiotype2,radiotype1,radiogame1,radiogame2, radiotype21, radiotype22;
     @FXML
     private CheckBox checkboxai;
     @FXML
@@ -107,6 +107,7 @@ public class Controller {
         queue1= model.returnInputinstance();
         Thread t1= new Thread(new InputHandler(this,model,view,queue1));
         t1.start();
+        PopupController popcontr=new PopupController(this);
     }
 
     public String getPlayerName() {
@@ -194,7 +195,6 @@ public class Controller {
                 command = "subscribe " + ((RadioButton) gamegroup.getSelectedToggle()).getText();
             }
 
-            System.out.println(((RadioButton) typegroup.getSelectedToggle()).getText());
                 if (((RadioButton) typegroup.getSelectedToggle()).getText().equals("Kruisje")){
                 cellType =Cell.KRUISJE;
             }
@@ -249,9 +249,7 @@ public class Controller {
                     int length= (int) Math.sqrt(list.length);
                     double x =canvas.getWidth()/length;
                     double y = canvas.getHeight()/length;
-
                     model.getGame().move((int)(event.getX()/x),(int) (event.getY()/y));
-                    //System.out.println(event.getX()+ ","+ event.getY());
                 }
             });
                 });
@@ -267,6 +265,14 @@ public class Controller {
         popup.setScene(new Scene(pane));
         popup.setTitle("Challenge");
         popup.show();
+            if (game.equals("Tic-tac-toe")){
+                radiotype21.setText("Kruisje");
+                radiotype22.setText("Rondje");
+            }
+            else {
+                radiotype21.setText("Zwart");
+                radiotype22.setText("Wit");
+            }
         });
     }
 
@@ -278,6 +284,12 @@ public class Controller {
         }
         else if (((RadioButton) typegroup2.getSelectedToggle()).getText().equals("Rondje")){
             cellType =Cell.RONDJE;
+        }
+        else if (((RadioButton) typegroup2.getSelectedToggle()).getText().equals("Zwart")){
+            cellType = Cell.ZWART;
+        }
+        else {
+            cellType=Cell.WIT;
         }
 
         Stage stage = (Stage) ((Button) event.getSource()).getScene().getWindow();

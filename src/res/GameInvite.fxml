@@ -29,7 +29,7 @@
             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
          </rowConstraints>
          <children>
-            <RadioButton mnemonicParsing="false" selected="true" text="Kruisje" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
+            <RadioButton fx:id="radiotype21" mnemonicParsing="false" prefWidth="70.0" selected="true" text="Kruisje" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
                <GridPane.margin>
                   <Insets />
                </GridPane.margin>
@@ -37,7 +37,7 @@
                   <ToggleGroup fx:id="typegroup2" />
                </toggleGroup>
             </RadioButton>
-            <RadioButton mnemonicParsing="false" text="Rondje" toggleGroup="$typegroup2" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER">
+            <RadioButton fx:id="radiotype22" mnemonicParsing="false" prefWidth="70.0" text="Rondje" toggleGroup="$typegroup2" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER">
                <GridPane.margin>
                   <Insets />
                </GridPane.margin>
