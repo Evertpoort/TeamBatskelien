@@ -118,7 +118,7 @@ help [commando]		Help weergeven
                 controller.loadgame();
                 controller.onupdate(args.get(0));
                 if (args.get(1).equals("Tic-tac-toe")){
-                   // controller.hidescorelabels();
+                    controller.hidescorelabels(false);
                 }
             }
             else if (command.contains("MOVE")){

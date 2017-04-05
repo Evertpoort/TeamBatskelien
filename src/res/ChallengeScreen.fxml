@@ -76,7 +76,7 @@
                   <ToggleGroup fx:id="gamegroup" />
                </toggleGroup>
             </RadioButton>
-            <RadioButton fx:id="radiogame2" mnemonicParsing="false" onAction="#gamegroupaction" text="Othello" toggleGroup="$gamegroup" GridPane.halignment="LEFT" GridPane.rowIndex="1" GridPane.valignment="CENTER">
+            <RadioButton fx:id="radiogame2" mnemonicParsing="false" onAction="#gamegroupaction" text="Reversi" toggleGroup="$gamegroup" GridPane.halignment="LEFT" GridPane.rowIndex="1" GridPane.valignment="CENTER">
                <GridPane.margin>
                   <Insets />
                </GridPane.margin>

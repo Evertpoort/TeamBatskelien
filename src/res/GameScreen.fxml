@@ -48,12 +48,12 @@
             <Insets right="5.0" />
          </GridPane.margin>
       </Label>
-      <Label text="Your score: 0" GridPane.rowIndex="1">
+      <Label fx:id="score1" text="Your score: 0" GridPane.rowIndex="1">
          <GridPane.margin>
             <Insets left="5.0" />
          </GridPane.margin>
       </Label>
-      <Label text="Oponent's score: 0" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="1">
+      <Label fx:id="score2" text="Oponent's score: 0" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="1">
          <GridPane.margin>
             <Insets right="5.0" />
          </GridPane.margin>

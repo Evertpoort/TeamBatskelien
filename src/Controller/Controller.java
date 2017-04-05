@@ -85,7 +85,7 @@ public class Controller {
     @FXML
     private TableColumn<Table,String> onlinecolumn;
     @FXML
-    private Label invitelabel, turnLabel;
+    private Label invitelabel, turnLabel, score1,score2;
     @FXML
     private javafx.scene.canvas.Canvas canvas;
     @FXML
@@ -316,5 +316,8 @@ public class Controller {
     }
 
 
-    //public void hide
+    public void hidescorelabels(Boolean bool){
+        score1.setVisible(bool);
+        score2.setVisible(bool);
+    }
 }
