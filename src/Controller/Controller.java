@@ -85,7 +85,7 @@ public class Controller {
     @FXML
     private TableColumn<Table,String> onlinecolumn;
     @FXML
-    private Label invitelabel;
+    private Label invitelabel, turnLabel;
     @FXML
     private javafx.scene.canvas.Canvas canvas;
     @FXML
@@ -289,7 +289,8 @@ public class Controller {
         stage.close();
     }
 
-    public void onupdate(){
+    public void onupdate(String name){
+       setTurnname(name);
         view.drawcanvas(canvas,model.getGame().getBoard());
     }
 
@@ -298,6 +299,19 @@ public class Controller {
         view.drawstatus(str,canvas);
         Platform.runLater(() -> {
             gamebutton.setText("Close");
+        });
+    }
+
+    public void setTurnname(String name){
+        String turnname;
+        if (name.equals(playerName)){
+            turnname= "You";
+        }
+        else {
+            turnname="Opponent";
+        }
+        Platform.runLater(() -> {
+            turnLabel.setText(turnname);
         });
     }
 

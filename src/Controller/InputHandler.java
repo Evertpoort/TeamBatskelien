@@ -105,6 +105,7 @@ help [commando]		Help weergeven
             if (command.contains("YOURTURN")){
                 model.getGame().setPlayerTurn();
                 // if ai: do ai move + update GUI
+                controller.setTurnname(controller.getPlayerName());
             }
 
             else if(command.contains("PLAYERLIST")){
@@ -115,13 +116,13 @@ help [commando]		Help weergeven
             else if (command.contains("MATCH")){
                 model.makeGame(args.get(1), controller.getPlayerCellType());
                 controller.loadgame();
-                controller.onupdate();
+                controller.onupdate(args.get(0));
             }
             else if (command.contains("MOVE")){
                 if (!args.get(0).equals(controller.getPlayerName())) {
                     model.getGame().opponentMove(Integer.parseInt(args.get(1)));
                 }
-                controller.onupdate();
+                controller.onupdate("");
             }
             else if (command.contains("CHALLENGENUMBER")&&!command.contains("CANCELLED")){
                 controller.invitereceived(args.get(0), Integer.parseInt(args.get(1)),args.get(2));

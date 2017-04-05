@@ -90,29 +90,34 @@ public class View {
         gc.setEffect(null);
 
 
-        gc.setFill(Color.BLACK);
-        gc.setFontSmoothingType(FontSmoothingType.LCD);
-        gc.setFont(Font.font("Helvetica", FontWeight.BOLD, textheight));
-        gc.setTextAlign(TextAlignment.CENTER);
-        gc.setTextBaseline(VPos.CENTER);
-        String character = "";
 
-        if (cell==Cell.WIT){
 
-        }
-        else if (cell==Cell.ZWART){
+        if (cell==Cell.KRUISJE||cell==Cell.RONDJE){
+            gc.setFill(Color.BLACK);
+            gc.setFontSmoothingType(FontSmoothingType.LCD);
+            gc.setFont(Font.font("Helvetica", FontWeight.BOLD, textheight));
+            gc.setTextAlign(TextAlignment.CENTER);
+            gc.setTextBaseline(VPos.CENTER);
+            String character = "";
+            if (cell==Cell.KRUISJE){
+                character="X";
+            }
+            else{
+                character="O";
+            }
 
+            gc.fillText(character,xpos*offsetx+offsetx/2,ypos*offsety+offsety/2);
         }
-        else if (cell==Cell.KRUISJE){
-            character="X";
-        }
-        else if (cell==Cell.RONDJE){
-        character="O";
-        }
-        else{
+        else if (cell==Cell.WIT||cell==Cell.RONDJE){
+            if (cell==Cell.ZWART){
 
+            }
+            else{
+
+            }
         }
-        gc.fillText(character,xpos*offsetx+offsetx/2,ypos*offsety+offsety/2);
+
+
     }
 
     public void drawstatus(String str,Canvas canvas){
@@ -122,6 +127,16 @@ public class View {
 
         double textheight = canvas.getHeight()/3;
         // add nice back ground
+        if (str.equals("Win")){
+            gc.setFill(Color.rgb(153,255,153));
+        }
+        else if (str.equals("Lose")){
+            gc.setFill(Color.rgb(255,102,102));
+        }
+        else{
+            gc.setFill(Color.ALICEBLUE);
+        }
+        gc.fillRect(0,0,canvas.getWidth(),canvas.getHeight());
         gc.setFill(Color.BLACK);
         gc.setFontSmoothingType(FontSmoothingType.LCD);
         gc.setFont(Font.font("Helvetica", FontWeight.BOLD, textheight));
