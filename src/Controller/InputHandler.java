@@ -117,6 +117,9 @@ help [commando]		Help weergeven
                 model.makeGame(args.get(1), controller.getPlayerCellType());
                 controller.loadgame();
                 controller.onupdate(args.get(0));
+                if (args.get(1).equals("Tic-tac-toe")){
+                   // controller.hidescorelabels();
+                }
             }
             else if (command.contains("MOVE")){
                 if (!args.get(0).equals(controller.getPlayerName())) {

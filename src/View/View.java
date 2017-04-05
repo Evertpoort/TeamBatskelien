@@ -108,13 +108,18 @@ public class View {
 
             gc.fillText(character,xpos*offsetx+offsetx/2,ypos*offsety+offsety/2);
         }
-        else if (cell==Cell.WIT||cell==Cell.RONDJE){
+        else if (cell==Cell.WIT||cell==Cell.ZWART){
+            gc.setFill(Color.BLACK);
+            gc.strokeArc(xpos*offsetx+offsetx/2-textheight/2,ypos*offsety+offsety/2-textheight/2,textheight,textheight,0,360,ArcType.ROUND);
             if (cell==Cell.ZWART){
-
+                gc.setFill(Color.BLACK);
             }
             else{
-
+            gc.setFill(Color.WHITE);
             }
+
+            gc.fillArc(xpos*offsetx+offsetx/2-textheight/2,ypos*offsety+offsety/2-textheight/2,textheight,textheight,0,360,ArcType.ROUND);
+
         }
 
 
