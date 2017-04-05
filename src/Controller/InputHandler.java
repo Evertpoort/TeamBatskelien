@@ -126,9 +126,20 @@ help [commando]		Help weergeven
             }
             else if (command.contains("CHALLENGENUMBER")&&!command.contains("CANCELLED")){
                 controller.invitereceived(args.get(0), Integer.parseInt(args.get(1)),args.get(2));
-            } else {
+            }
+            else if (command.contains("WIN")){
+             controller.displaystatus("Win");
+            }
+            else if (command.contains("LOSS")){
+                controller.displaystatus("Lose");
+            }
+            else if (command.contains("DRAW")){
+                controller.displaystatus("Draw");
+            }
+            else {
                 System.out.println("Unknown command received: " + command);
             }
+
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

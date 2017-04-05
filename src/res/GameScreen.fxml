@@ -24,8 +24,8 @@
       <Canvas fx:id="canvas" height="365.0" width="419.0" GridPane.columnSpan="2147483647" GridPane.rowIndex="2" />
       <GridPane prefHeight="29.0" prefWidth="193.0">
         <columnConstraints>
-          <ColumnConstraints hgrow="SOMETIMES" maxWidth="51.0" minWidth="22.0" prefWidth="32.0" />
-          <ColumnConstraints hgrow="SOMETIMES" maxWidth="180.0" minWidth="170.0" prefWidth="170.0" />
+          <ColumnConstraints hgrow="SOMETIMES" maxWidth="51.0" minWidth="22.0" prefWidth="41.0" />
+          <ColumnConstraints hgrow="SOMETIMES" maxWidth="180.0" minWidth="161.0" prefWidth="161.0" />
         </columnConstraints>
         <rowConstraints>
           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
@@ -36,7 +36,7 @@
                   <Insets left="5.0" />
                </GridPane.margin>
             </Label>
-            <Label fx:id="TurnLabel" prefHeight="17.0" prefWidth="153.0" text=" You/Computer/Opponent" GridPane.columnIndex="1">
+            <Label fx:id="turnLabel" prefHeight="17.0" prefWidth="153.0" text=" You/Computer/Opponent" GridPane.columnIndex="1">
                <GridPane.margin>
                   <Insets />
                </GridPane.margin>
@@ -58,7 +58,7 @@
             <Insets right="5.0" />
          </GridPane.margin>
       </Label>
-      <Button mnemonicParsing="false" onAction="#giveupclicked" prefHeight="25.0" prefWidth="121.0" text="Give up" GridPane.columnSpan="2147483647" GridPane.halignment="CENTER" GridPane.rowIndex="3">
+      <Button fx:id="gamebutton" mnemonicParsing="false" onAction="#giveupclicked" prefHeight="25.0" prefWidth="121.0" text="Give up" GridPane.columnSpan="2147483647" GridPane.halignment="CENTER" GridPane.rowIndex="3">
          <GridPane.margin>
             <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
          </GridPane.margin>

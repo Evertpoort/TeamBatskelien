@@ -88,6 +88,8 @@ public class Controller {
     private Label invitelabel;
     @FXML
     private javafx.scene.canvas.Canvas canvas;
+    @FXML
+    private Button gamebutton;
 
     final ObservableList<Table> data = FXCollections.observableArrayList(
     );
@@ -289,6 +291,14 @@ public class Controller {
 
     public void onupdate(){
         view.drawcanvas(canvas,model.getGame().getBoard());
+    }
+
+
+    public void displaystatus(String str){
+        view.drawstatus(str,canvas);
+        Platform.runLater(() -> {
+            gamebutton.setText("Close");
+        });
     }
 
 }

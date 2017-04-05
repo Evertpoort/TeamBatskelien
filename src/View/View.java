@@ -69,6 +69,7 @@ public class View {
 
 
     public void draw(Canvas canvas,int index, Cell[] list) {
+     //   gc.clearRect(0,0,canvas.getWidth(),canvas.getHeight());
         Cell cell = list[index];
         double divider= Math.sqrt(list.length);
         double xpos= index%divider;
@@ -112,5 +113,20 @@ public class View {
 
         }
         gc.fillText(character,xpos*offsetx+offsetx/2,ypos*offsety+offsety/2);
+    }
+
+    public void drawstatus(String str,Canvas canvas){
+        gc= canvas.getGraphicsContext2D();
+        gc.clearRect(0,0,canvas.getWidth(),canvas.getHeight());
+
+
+        double textheight = canvas.getHeight()/3;
+        // add nice back ground
+        gc.setFill(Color.BLACK);
+        gc.setFontSmoothingType(FontSmoothingType.LCD);
+        gc.setFont(Font.font("Helvetica", FontWeight.BOLD, textheight));
+        gc.setTextAlign(TextAlignment.CENTER);
+        gc.setTextBaseline(VPos.CENTER);
+        gc.fillText(str,canvas.getWidth()/2,canvas.getHeight()/2);
     }
 }
