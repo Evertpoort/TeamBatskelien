@@ -27,6 +27,7 @@ import java.io.IOException;
 public class View {
     private Stage stage;
     public ScreenController screenController;
+    public ScreenController popupscreenController;
     public BorderPane root;
     public Controller controller;
     public Model model;
@@ -39,25 +40,35 @@ public class View {
         this.root = new BorderPane();
         this.controller = new Controller(this, model);
         this.screenController = new ScreenController(stage, root);
+        this.popupscreenController = new ScreenController(stage,root);
         this.model = model;
 
 
         addScene("LoginScreen", "../res/LoginScreen.fxml");
         addScene("LobbyScreen", "../res/LobbyScreen.fxml");
-        addScene("ChallengeScreen", "../res/ChallengeScreen.fxml");
         addScene("GameScreen", "../res/GameScreen.fxml");
-        addScene("GameInvite", "../res/GameInvite.fxml");
+
+        addPopupScene("ChallengeScreen", "../res/ChallengeScreen.fxml");
+        addPopupScene("GameInvite", "../res/GameInvite.fxml");
         stage.setScene(new Scene(root));
     }
 
     public void addScene(String name, String path) {
         FXMLLoader loader = new FXMLLoader(getClass().getResource(path));
-        if (loader.getController()==null){
-            loader.setController(controller);
-        }
+        loader.setController(controller);
         try {
             screenController.add(name, loader.load());
         } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void addPopupScene(String name, String path){
+        FXMLLoader loader = new FXMLLoader(getClass().getResource(path));
+        loader.setController(controller.popcontr);
+        try {
+            popupscreenController.add(name,loader.load());
+        }catch (IOException e) {
             e.printStackTrace();
         }
     }

@@ -73,19 +73,17 @@ public class Controller {
     @FXML
     ComboBox<String> combobox;
     @FXML
-    private RadioButton radiotype2,radiotype1,radiogame1,radiogame2, radiotype21, radiotype22;
-    @FXML
-    private CheckBox checkboxai;
+    private RadioButton radiogame1,radiogame2;
+
     @FXML
     private TextField login;
-    @FXML
-    private ToggleGroup gamegroup,typegroup,typegroup2;
+
     @FXML
     private TableView<Table> usertable;
     @FXML
     private TableColumn<Table,String> onlinecolumn;
     @FXML
-    private Label invitelabel, turnLabel, score1,score2;
+    private Label turnLabel, score1,score2;
     @FXML
     private javafx.scene.canvas.Canvas canvas;
     @FXML
@@ -99,6 +97,7 @@ public class Controller {
     private String playerName;
     private String opponentName;
     private Cell cellType;
+    public PopupController popcontr;
 
     public Controller(View view,Model model){
         this.view= view;
@@ -107,7 +106,7 @@ public class Controller {
         queue1= model.returnInputinstance();
         Thread t1= new Thread(new InputHandler(this,model,view,queue1));
         t1.start();
-        PopupController popcontr=new PopupController(this);
+        popcontr=new PopupController(this,view,queue);
     }
 
     public String getPlayerName() {
@@ -117,6 +116,11 @@ public class Controller {
     public Cell getPlayerCellType() {
         return cellType;
     }
+
+    public void setCellType(Cell cellType){
+        this.cellType= cellType;
+    }
+    public String getSelectedPlayer;
 
     public String getOpponentName() {
         return opponentName;
@@ -154,7 +158,7 @@ public class Controller {
                     String selected = data.get(newValue.intValue()).getPlayername();
                     //System.out.println(selected);
                     if (selected != null) {
-                        selectedPlayer = data.get(newValue.intValue()).getPlayername();
+                        popcontr.setselectedPlayer(data.get(newValue.intValue()).getPlayername());
                     }
                 }
             });
@@ -166,61 +170,15 @@ public class Controller {
         onEnter(event);
     }
 
-    @FXML
-    public void gamegroupaction(ActionEvent event){
-        String word =((RadioButton)event.getSource()).getText();
-        if (word.equals("Tic-tac-toe")){
-            radiotype1.setText("Kruisje");
-            radiotype2.setText("Rondje");
-            checkboxai.setDisable(true);
-        }
-        else {
-            checkboxai.setDisable(false);
-            radiotype1.setText("Zwart");
-            radiotype2.setText("Wit");
-        }
-    }
 
-    @FXML
-    public void challegenebuttonclicked(ActionEvent event){
-        String command= "";
-        if (selectedPlayer==null&&randomqueue==false){
-            System.out.println("No selected player");
-        }
-        else {
-            if (randomqueue == false) {
-                command = "Challenge " + "\"" + selectedPlayer + "\""
-                        + "\"" + ((RadioButton) gamegroup.getSelectedToggle()).getText() + "\"";
-            } else {
-                command = "subscribe " + ((RadioButton) gamegroup.getSelectedToggle()).getText();
-            }
 
-                if (((RadioButton) typegroup.getSelectedToggle()).getText().equals("Kruisje")){
-                cellType =Cell.KRUISJE;
-            }
-            else if (((RadioButton) typegroup.getSelectedToggle()).getText().equals("Rondje")){
-                    cellType =Cell.RONDJE;
-                }
-
-            //System.out.println(command);
-            queue.offer(command);
-        }
-        Stage stage = (Stage) ((Button) event.getSource()).getScene().getWindow();
-        stage.close();
-    }
     @FXML
     public void refresh(ActionEvent event){
         queue.offer("get playerlist");
     }
     @FXML
     public void openchallenge(ActionEvent event){
-        randomqueue= false;
-        final Stage popup= new Stage();
-        BorderPane pane = new BorderPane();
-        view.screenController.active("ChallengeScreen",popup,pane);
-        popup.setScene(new Scene(pane));
-        popup.setTitle("Challenge");
-        popup.show();
+        popcontr.openchallenge();
     }
 
     public void updateplayerlist(String[] list){
@@ -241,7 +199,6 @@ public class Controller {
     public void loadgame(){
         Platform.runLater(() -> {
             view.screenController.active("GameScreen");
-
             canvas.setOnMouseClicked(new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent event) {
@@ -256,50 +213,9 @@ public class Controller {
     }
 
     public void invitereceived(String playername,int challengenumber, String game){
-        this.challengenumber=challengenumber;
-        Platform.runLater(() -> {
-        invitelabel.setText(playername +" has invited you to a game of " + game);
-        final Stage popup= new Stage();
-        BorderPane pane = new BorderPane();
-        view.screenController.active("GameInvite",popup,pane);
-        popup.setScene(new Scene(pane));
-        popup.setTitle("Challenge");
-        popup.show();
-            if (game.equals("Tic-tac-toe")){
-                radiotype21.setText("Kruisje");
-                radiotype22.setText("Rondje");
-            }
-            else {
-                radiotype21.setText("Zwart");
-                radiotype22.setText("Wit");
-            }
-        });
+    popcontr.invitereceived(playername,challengenumber,game);
     }
 
-    @FXML
-    public void inviteaccept(ActionEvent event){
-        queue.offer("challenge accept "+ challengenumber);
-        if (((RadioButton) typegroup2.getSelectedToggle()).getText().equals("Kruisje")){
-            cellType =Cell.KRUISJE;
-        }
-        else if (((RadioButton) typegroup2.getSelectedToggle()).getText().equals("Rondje")){
-            cellType =Cell.RONDJE;
-        }
-        else if (((RadioButton) typegroup2.getSelectedToggle()).getText().equals("Zwart")){
-            cellType = Cell.ZWART;
-        }
-        else {
-            cellType=Cell.WIT;
-        }
-
-        Stage stage = (Stage) ((Button) event.getSource()).getScene().getWindow();
-        stage.close();
-    }
-    @FXML
-    public void declineinvite(ActionEvent event){
-        Stage stage = (Stage) ((Button) event.getSource()).getScene().getWindow();
-        stage.close();
-    }
 
     public void onupdate(String name){
        setTurnname(name);
