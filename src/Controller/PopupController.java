@@ -146,4 +146,13 @@ public class PopupController {
         }
     }
 
+    public void subscribeopen(){
+        randomqueue=true;
+        final Stage popup= new Stage();
+        BorderPane pane = new BorderPane();
+        view.popupscreenController.active("ChallengeScreen",popup,pane);
+        popup.setScene(new Scene(pane));
+        popup.setTitle("Challenge");
+        popup.show();
+    }
 }

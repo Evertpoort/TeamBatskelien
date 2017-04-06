@@ -91,13 +91,7 @@ public class Controller {
 
     @FXML
     public void subscribebutton(ActionEvent event){
-        randomqueue=true;
-        final Stage popup= new Stage();
-        BorderPane pane = new BorderPane();
-        view.screenController.active("ChallengeScreen",popup,pane);
-        popup.setScene(new Scene(pane));
-        popup.setTitle("Challenge");
-        popup.show();
+        popcontr.subscribeopen();
     }
 
     @FXML

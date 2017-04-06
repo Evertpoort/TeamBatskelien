@@ -17,7 +17,7 @@ public class Model {
     public void makeGame(String type, Cell cellType) {
 
         if (type.equals("Reversi"))
-            return;
+            game = new Othello(outputQueue, cellType);
         else if (type.equals("Tic-tac-toe"))
             game = new TicTacToe(outputQueue, cellType);
         else
