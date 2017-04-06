@@ -139,7 +139,7 @@ public class Controller {
     public void updateplayerlist(String[] list){
         data.clear();
         for (String i: list){
-            if (!i.equals("")){
+            if (!i.equals("")&&!i.equals(playerName)){
                 //System.out.println(i);
                 data.add(new Table(i));
             }
