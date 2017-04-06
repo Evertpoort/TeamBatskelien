@@ -19,6 +19,7 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception{
         this.stage=primaryStage;
+        stage.setOnCloseRequest(event -> {System.exit(0);});
         this.model= new Model();
         this.view= new View(stage,model);
 

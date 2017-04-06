@@ -48,7 +48,7 @@
          <GridPane.margin>
             <Insets />
          </GridPane.margin></Button>
-      <CheckBox fx:id="checkboxai" disable="true" mnemonicParsing="false" text="Enable AI" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER">
+      <CheckBox fx:id="checkboxai1" disable="true" mnemonicParsing="false" text="Enable AI" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER">
          <GridPane.margin>
             <Insets left="10.0" />
          </GridPane.margin></CheckBox>

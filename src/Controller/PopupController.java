@@ -27,7 +27,7 @@ public class PopupController {
     @FXML
     private ToggleGroup gamegroup,typegroup;
     @FXML
-    private CheckBox checkboxai;
+    private CheckBox checkboxai,checkboxai1;
 
     private Controller controller;
     private View view;
@@ -58,9 +58,11 @@ public class PopupController {
             if (game.equals("Tic-tac-toe")) {
                 radiotype21.setText("Kruisje");
                 radiotype22.setText("Rondje");
+                checkboxai1.setDisable(true);
             } else {
                 radiotype21.setText("Zwart");
                 radiotype22.setText("Wit");
+                checkboxai1.setDisable(false);
             }
         });
     }

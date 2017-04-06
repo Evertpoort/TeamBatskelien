@@ -117,7 +117,6 @@ help [commando]		Help weergeven
             }
             else if (command.contains("MATCH")){
                 Boolean yourturn;
-                System.out.println(args.get(0));
                 if (args.get(0).equals(controller.getPlayerName())){
                     yourturn=true;
                 } else {
