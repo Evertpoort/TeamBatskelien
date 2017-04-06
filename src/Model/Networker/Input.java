@@ -22,7 +22,7 @@ public class Input implements Runnable  {
         while (true){
             try {
                 if ((line=in.readLine())!=null){
-                    if (line.startsWith("SVR")){
+                    if (line.startsWith("SVR")||line.startsWith("ERR")){
                         queue2.offer(line);
                     }
                     messageArea.append(line);

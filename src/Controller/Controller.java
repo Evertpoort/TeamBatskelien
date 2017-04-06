@@ -108,7 +108,6 @@ public class Controller {
             usertable.getSelectionModel().selectedIndexProperty().addListener((observable, oldValue, newValue) -> {
                 if (newValue.intValue() >= 0) {
                     String selected = data.get(newValue.intValue()).getPlayername();
-                    //System.out.println(selected);
                     if (selected != null) {
                         popcontr.setselectedPlayer(data.get(newValue.intValue()).getPlayername());
                     }
@@ -120,6 +119,12 @@ public class Controller {
     @FXML
     public void loginClick(ActionEvent event){
         onEnter(event);
+    }
+
+    public void backToLogin(){
+        Platform.runLater(() -> {
+            view.screenController.active("LoginScreen");
+        });
     }
 
     @FXML

@@ -148,6 +148,9 @@ help [commando]		Help weergeven
             else if (command.contains("DRAW")){
                 controller.displaystatus("Draw");
             }
+            else if (command.contains("disabled")||command.contains("duplicate")){
+                controller.backToLogin();
+                }
             else {
                 System.out.println("Unknown command received: " + command);
             }
