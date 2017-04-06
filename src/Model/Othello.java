@@ -39,6 +39,15 @@ public class Othello extends Game {
         return true;
     }
 
+
+//    links -1
+//    linksonder +7
+//    onder +8
+//    rechtonder +9
+//    rechts +1
+//    rechtboven-7
+//    boven +8
+//    linksboven -9
     private ArrayList<Integer> getValidIndexes() {
         int i = 0;
         for (Cell cell : getBoard()) {
