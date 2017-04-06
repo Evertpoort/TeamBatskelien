@@ -18,15 +18,15 @@ public abstract class Game {
         this.cellTypeOpponent = cellTypeOpponent;
     }
 
-    private int getIndex(int x, int y) {
+    public int getIndex(int x, int y) {
         return y * size + x;
     }
 
-    private int getX(int index) {
+    public int getX(int index) {
         return index % size;
     }
 
-    private int getY(int index) {
+    public int getY(int index) {
         return index / size;
     }
 
