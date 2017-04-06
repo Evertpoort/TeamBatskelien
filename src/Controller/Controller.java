@@ -150,6 +150,7 @@ public class Controller {
     public void loadgame(){
         Platform.runLater(() -> {
             view.screenController.active("GameScreen");
+            gamebutton.setText("Give up");
             canvas.setOnMouseClicked(new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent event) {
