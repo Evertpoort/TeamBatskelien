@@ -8,6 +8,8 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static Model.Cell.ZWART;
+
 public class InputHandler implements Runnable {
     Controller controller;
     View view;
@@ -114,7 +116,16 @@ help [commando]		Help weergeven
                 controller.updateplayerlist(list);
             }
             else if (command.contains("MATCH")){
-                model.makeGame(args.get(1), controller.getPlayerCellType());
+                Boolean yourturn;
+                System.out.println(args.get(0));
+                if (args.get(0)==controller.getPlayerName()){
+                    yourturn=true;
+                }
+                else {
+                    yourturn=false;
+
+                }
+                model.makeGame(args.get(1),yourturn,controller.getPlayerCellType());
                 controller.loadgame();
                 controller.onupdate(args.get(0));
                 if (args.get(1).equals("Tic-tac-toe")){

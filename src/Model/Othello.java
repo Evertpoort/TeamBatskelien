@@ -8,14 +8,14 @@ public class Othello extends Game {
         super(outputQueue, 8, cellType, cellType == Cell.ZWART ? Cell.WIT : Cell.ZWART);
         if (playerTurn) {
             board.setCell(28, cellTypePlayer);
-            board.setCell(36, cellTypePlayer);
+            board.setCell(35, cellTypePlayer);
             board.setCell(27, cellTypeOpponent);
-            board.setCell(35, cellTypeOpponent);
+            board.setCell(36, cellTypeOpponent);
         } else {
             board.setCell(28, cellTypeOpponent);
-            board.setCell(36, cellTypeOpponent);
+            board.setCell(35, cellTypeOpponent);
             board.setCell(27, cellTypePlayer);
-            board.setCell(35, cellTypePlayer);
+            board.setCell(36, cellTypePlayer);
         }
     }
 
