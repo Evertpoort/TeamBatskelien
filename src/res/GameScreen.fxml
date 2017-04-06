@@ -17,11 +17,11 @@
       <RowConstraints />
    </rowConstraints>
    <columnConstraints>
-      <ColumnConstraints maxWidth="202.0" minWidth="175.0" prefWidth="202.0" />
-      <ColumnConstraints maxWidth="203.0" minWidth="181.0" prefWidth="202.0" />
+      <ColumnConstraints maxWidth="210.0" minWidth="175.0" prefWidth="210.0" />
+      <ColumnConstraints maxWidth="210.0" minWidth="181.0" prefWidth="210.0" />
    </columnConstraints>
    <children>
-      <Canvas fx:id="canvas" height="365.0" width="419.0" GridPane.columnSpan="2147483647" GridPane.rowIndex="2" />
+      <Canvas fx:id="canvas" height="365.0" width="420.0" GridPane.columnSpan="2147483647" GridPane.rowIndex="2" />
       <GridPane prefHeight="29.0" prefWidth="193.0">
         <columnConstraints>
           <ColumnConstraints hgrow="SOMETIMES" maxWidth="51.0" minWidth="22.0" prefWidth="41.0" />

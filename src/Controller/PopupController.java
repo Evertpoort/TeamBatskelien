@@ -93,11 +93,15 @@ public class PopupController {
     public void declineinvite(ActionEvent event){
         Stage stage = (Stage) ((Button) event.getSource()).getScene().getWindow();
         stage.close();
+        controller.setCellType(null);
     }
 
     @FXML
     public void challegenebuttonclicked(ActionEvent event){
         String command= "";
+        if (controller.getPlayerCellType()!=null){
+            controller.setCellType(null);
+        }
         if (selectedPlayer==null&&randomqueue==false){
             System.out.println("No selected player");
         }

@@ -79,6 +79,8 @@ public class Controller {
     public void setCellType(Cell cellType){
         this.cellType= cellType;
     }
+
+
     public String getSelectedPlayer;
 
     public String getOpponentName() {
@@ -150,6 +152,7 @@ public class Controller {
     public void giveupclicked(ActionEvent event){
         if (((Button)event.getSource()).getText().equals("Give up")){queue.offer("forfeit");}
         view.screenController.active("LobbyScreen");
+        cellType=null;
     }
 
     public void loadgame(){
