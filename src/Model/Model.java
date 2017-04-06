@@ -15,12 +15,17 @@ public class Model {
     }
 
     public void makeGame(String type, boolean playerTurn, Cell playerCellType) {
-        if (type.equals("Reversi"))
+        if (type.equals("Reversi")) {
+            if (playerCellType == null)
+                playerCellType = Cell.KRUISJE;
             game = new Othello(outputQueue, playerTurn, playerCellType);
-        else if (type.equals("Tic-tac-toe"))
+        } else if (type.equals("Tic-tac-toe")) {
+            if (playerCellType == null)
+                playerCellType = Cell.ZWART;
             game = new TicTacToe(outputQueue, playerCellType);
-        else
+        } else {
             System.out.println("Unknown game type: " + type);
+        }
     }
 
     public Game getGame() {
