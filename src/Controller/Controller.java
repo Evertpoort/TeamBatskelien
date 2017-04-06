@@ -4,15 +4,12 @@ import Model.Model;
 import Model.Cell;
 import View.View;
 import javafx.application.Platform;
-import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.fxml.Initializable;
 import javafx.scene.Scene;
 import javafx.scene.canvas.*;
 import javafx.scene.canvas.Canvas;
@@ -23,46 +20,8 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.text.Text;
 import javafx.stage.Stage;
-
-import java.awt.*;
-import java.io.IOException;
-import java.net.URL;
-import java.util.Objects;
-import java.util.ResourceBundle;
 import java.util.concurrent.LinkedBlockingQueue;
-
-
-/*
-    login <speler>          (String)        > Logs in the player
-    logout | exit | quit | disconnect | bye > Logs out the player
-            queue.offer("Logout");
-
-    get gamelist                            > Returns a list of supported games
-            queue.offer("get gamelist");
-
-    get playerlist                          > Returns a list of players
-            queue.offer("get playerlist");
-
-    subscribe <speltype>    (Reversi / Tic-tac-toe) > Subscribes player to game type (case sensitive)
-                queue.offer("subscribe " + command);
-
-    move <zet>              (getal tussen 1-9)      > Executes move
-                    queue.offer("move " + command);
-
-    forfeit                                         > Player forfeits game
-                        queue.offer("forfeit");
-
-    challenge <player> <gametype>                   > Challenges <a> to play a game of <b>
-    e.g. challenge "Eppo" "Tic-tac-toe" (case sensitive, requires "" around each argument)
-                        queue.offer("challenge " + command);
-
-    challenge accept <uitdaging nummer>             > Accepts challenge
-                        queue.offer("challenge accept " + command);
-
- */
-
 
 public class Controller {
     public View view;
@@ -143,7 +102,6 @@ public class Controller {
 
     @FXML
     public void onEnter(ActionEvent event){
-        // do login
         String name = login.getText();
         if (!name.equals("")) {
             playerName = name;
@@ -170,8 +128,6 @@ public class Controller {
         onEnter(event);
     }
 
-
-
     @FXML
     public void refresh(ActionEvent event){
         queue.offer("get playerlist");
@@ -190,9 +146,10 @@ public class Controller {
             }
         }
     }
+
     @FXML
     public void giveupclicked(ActionEvent event){
-        queue.offer("forfeit");
+        if (((Button)event.getSource()).getText().equals("Give up")){queue.offer("forfeit");}
         view.screenController.active("LobbyScreen");
     }
 
@@ -216,12 +173,10 @@ public class Controller {
     popcontr.invitereceived(playername,challengenumber,game);
     }
 
-
     public void onupdate(String name){
        setTurnname(name);
         view.drawcanvas(canvas,model.getGame().getBoard());
     }
-
 
     public void displaystatus(String str){
         view.drawstatus(str,canvas);
@@ -242,7 +197,6 @@ public class Controller {
             turnLabel.setText(turnname);
         });
     }
-
 
     public void hidescorelabels(Boolean bool){
         score1.setVisible(bool);
