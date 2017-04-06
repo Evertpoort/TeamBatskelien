@@ -7,15 +7,15 @@ public class Othello extends Game {
     public Othello(LinkedBlockingQueue<String> outputQueue, boolean playerTurn, Cell cellType){
         super(outputQueue, 8, cellType, cellType == Cell.ZWART ? Cell.WIT : Cell.ZWART);
         if (playerTurn) {
-            board.setCell(27, cellTypePlayer);
-            board.setCell(36, cellTypePlayer);
-            board.setCell(28, cellTypeOpponent);
-            board.setCell(35, cellTypeOpponent);
-        } else {
             board.setCell(27, cellTypeOpponent);
             board.setCell(36, cellTypeOpponent);
             board.setCell(28, cellTypePlayer);
             board.setCell(35, cellTypePlayer);
+        } else {
+            board.setCell(27, cellTypePlayer);
+            board.setCell(36, cellTypePlayer);
+            board.setCell(28, cellTypeOpponent);
+            board.setCell(35, cellTypeOpponent);
         }
     }
 
@@ -29,10 +29,10 @@ public class Othello extends Game {
             System.out.println("Cell not empty!");
             return false;
         }
-        if (!getValidIndexes().contains(index)) {
-            System.out.println("Not a valid move!");
-            return false;
-        }
+//        if (!getValidIndexes().contains(index)) {
+//            System.out.println("Not a valid move!");
+//            return false;
+//        }
         playerTurn = false;
         board.setCell(index, cellTypePlayer);
         sendMoveToServer(index);
