@@ -14,12 +14,11 @@ public class Model {
         networker = new Networker(outputQueue,inputQueue);
     }
 
-    public void makeGame(String type, Cell cellType) {
-
+    public void makeGame(String type, boolean playerTurn, Cell playerCellType) {
         if (type.equals("Reversi"))
-            game = new Othello(outputQueue, cellType);
+            game = new Othello(outputQueue, playerTurn, playerCellType);
         else if (type.equals("Tic-tac-toe"))
-            game = new TicTacToe(outputQueue, cellType);
+            game = new TicTacToe(outputQueue, playerCellType);
         else
             System.out.println("Unknown game type: " + type);
     }

@@ -42,10 +42,6 @@ public abstract class Game {
         playerTurn = true;
     }
 
-    public boolean getPlayerTurn() {
-        return playerTurn;
-    }
-
     public void opponentMove(int index) {
         board.setCell(index, cellTypeOpponent);
     }
