@@ -1,10 +1,11 @@
 package Model;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class Othello extends Game {
+    ArrayList<Integer> validIndexes = new ArrayList<>();
+
     public Othello(LinkedBlockingQueue<String> outputQueue, boolean playerTurn, Cell cellType){
         super(outputQueue, 8, cellType, cellType == Cell.ZWART ? Cell.WIT : Cell.ZWART);
         if (playerTurn) {
@@ -30,46 +31,99 @@ public class Othello extends Game {
             System.out.println("Cell not empty!");
             return false;
         }
-        if (!getUpdateIndexes().contains(index)) {
-            System.out.println("Not a valid move!");
+        if (!validIndexes.contains(index)) {
+//            System.out.println("Not a valid move!");
 //            return false;
         }
         playerTurn = false;
         board.setCell(index, cellTypePlayer);
+        updateBoard(index);
         sendMoveToServer(index);
         return true;
     }
 
-    // Returns valid indexes
-    private ArrayList<Integer> getUpdateIndexes() {
-        ArrayList<Integer> validIndexes = new ArrayList<>();
-        return validIndexes;
+    @Override
+    public void opponentMove(int index) {
+        super.opponentMove(index);
+        updateBoard(index);
     }
 
-    private Cell[][] getAllRows() {
-        Cell[][] rows = new Cell[8+8+15+15][8];
+    private void updateBoard(int indexMove) {
         for (int i = 0; i < 8; i++) {
-            for (int j = 0; j < 8; j++) {
-                rows[i][j] = board.getCell(getIndex(j, i)); // Horizontal
-                rows[8+i][j] = board.getCell(getIndex(i, j)); // Vertical
-            }
+            for (int j = 0; j < 8; j++)
+                checkCell(getIndex(j, i), indexMove); // Horizontal
+            startIndex = -1;
+            for (int j = 0; j < 8; j++)
+                checkCell(getIndex(i, j), indexMove); // Vertical
+            startIndex = -1;
             for (int j = 0, k = i; k < 8; j++, k++) {
-                rows[16+i][j] = board.getCell(getIndex(j, k)); // Diagonal1
-                if (i != 0)
-                    rows[23+i][j] = board.getCell(getIndex(k, j)); // Diagonal1
+                checkCell(getIndex(j, k), indexMove); // Diagonal1
             }
+            startIndex = -1;
+            for (int j = 0, k = i; k < 8; j++, k++) {
+                checkCell(getIndex(k, j), indexMove); // Diagonal1
+            }
+            startIndex = -1;
         }
 
         for(int i = 0 ; i < 15; i++) {
             for(int j = 0; j <= i; j++) {
                 int k = i - j;
                 if(k < 8 && j < 8) {
-                    rows[31+i][j] = board.getCell(getIndex(k, j)); // Diagonal2
+                    checkCell(getIndex(k, j), indexMove); // Diagonal2
                 }
             }
+            startIndex = -1;
         }
 
-        return rows;
+        validIndexes = new ArrayList<>();
+    }
+
+    private int startIndex = -1;
+    private ArrayList<Integer> needFlip = new ArrayList<>();
+    private void checkCell(int currentIndex, int clickedIndex) {
+        Cell cellType = board.getCell(currentIndex);
+        if (cellType == Cell.EMPTY) {
+            startIndex = -1;
+            if (!needFlip.isEmpty())
+                needFlip.clear();
+        } else if (cellType == board.getCell(clickedIndex)) {
+            if (!needFlip.isEmpty()) {
+                if ((currentIndex == clickedIndex && startIndex != -1) || startIndex == clickedIndex) {
+                    for (int i : needFlip) {
+                        Cell cell = board.getCell(i);
+                        if (cell == Cell.ZWART)
+                            cell = Cell.WIT;
+                        else
+                            cell = Cell.ZWART;
+                        board.setCell(i, cell);
+                    }
+                }
+                needFlip.clear();
+            }
+            startIndex = currentIndex;
+        } else if (startIndex != -1) {
+            needFlip.add(currentIndex);
+        }
+
+//        if (cellType == Cell.EMPTY || cellType == null || current == Cell.EMPTY || current == null  || cellType == current) {
+//            if (!needFlip.isEmpty()) {
+//                if (cellType == current) {
+//                    for (int i : needFlip) {
+//                        Cell cell = board.getCell(i);
+//                        if (cell == Cell.ZWART)
+//                            cell = Cell.WIT;
+//                        else
+//                            cell = Cell.ZWART;
+//                        board.setCell(i, cell);
+//                    }
+//                }
+//                needFlip.clear();
+//            }
+//            current = cellType;
+//        } else {
+//            needFlip.add(index);
+//        }
     }
 
     @Override
