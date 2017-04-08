@@ -19,6 +19,7 @@ public class Othello extends Game {
             board.setCell(28, cellTypeOpponent);
             board.setCell(35, cellTypeOpponent);
         }
+        updateBoard(-1);
     }
 
     @Override
@@ -27,17 +28,14 @@ public class Othello extends Game {
             System.out.println("It's not your turn!");
             return false;
         }
-        if (board.getCell(index) != Cell.EMPTY) {
-            System.out.println("Cell not empty!");
+        if (board.getCell(index) != Cell.EMPTY_VALID) {
+            System.out.println("Not a valid move!");
             return false;
-        }
-        if (!validIndexes.contains(index)) {
-//            System.out.println("Not a valid move!");
-//            return false;
         }
         playerTurn = false;
         board.setCell(index, cellTypePlayer);
         updateBoard(index);
+        updateBoard(-1);
         sendMoveToServer(index);
         return true;
     }
@@ -46,9 +44,17 @@ public class Othello extends Game {
     public void opponentMove(int index) {
         super.opponentMove(index);
         updateBoard(index);
+        updateBoard(-1);
     }
 
     private void updateBoard(int indexMove) {
+        if (indexMove == -1) {
+            for (int i = 0; i < 64; i++) {
+                if (board.getCell(i) == Cell.EMPTY_VALID)
+                    board.setCell(i, Cell.EMPTY);
+            }
+        }
+
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++)
                 checkCell(getIndex(j, i), indexMove); // Horizontal
@@ -75,15 +81,39 @@ public class Othello extends Game {
             }
             startIndex = -1;
         }
-
-        validIndexes = new ArrayList<>();
     }
 
+    // TODO: Super class functies + betere en meer functies (met betere variabelen)
+    // TODO: Gebruik maken van arrays
     private int startIndex = -1;
+    private boolean d = false;
     private ArrayList<Integer> needFlip = new ArrayList<>();
     private void checkCell(int currentIndex, int clickedIndex) {
         Cell cellType = board.getCell(currentIndex);
-        if (cellType == Cell.EMPTY) {
+
+        if (clickedIndex == -1) {
+            if (cellType == Cell.EMPTY || cellType == Cell.EMPTY_VALID) {
+                if (startIndex == -2)
+                    board.setCell(currentIndex, Cell.EMPTY_VALID);
+                startIndex = currentIndex;
+                d = false;
+            } else if (cellType == cellTypeOpponent) {
+                if (startIndex > -1)
+                    d = true;
+                else if (startIndex < -1) {
+                    startIndex = -2;
+                }
+            } else if (cellType == cellTypePlayer) {
+                if (d) {
+                    if (startIndex > -1)
+                        board.setCell(startIndex, Cell.EMPTY_VALID);
+                }
+                startIndex = -3;
+            }
+            return;
+        }
+
+        if (cellType == Cell.EMPTY || cellType == Cell.EMPTY_VALID) {
             startIndex = -1;
             if (!needFlip.isEmpty())
                 needFlip.clear();
@@ -105,25 +135,6 @@ public class Othello extends Game {
         } else if (startIndex != -1) {
             needFlip.add(currentIndex);
         }
-
-//        if (cellType == Cell.EMPTY || cellType == null || current == Cell.EMPTY || current == null  || cellType == current) {
-//            if (!needFlip.isEmpty()) {
-//                if (cellType == current) {
-//                    for (int i : needFlip) {
-//                        Cell cell = board.getCell(i);
-//                        if (cell == Cell.ZWART)
-//                            cell = Cell.WIT;
-//                        else
-//                            cell = Cell.ZWART;
-//                        board.setCell(i, cell);
-//                    }
-//                }
-//                needFlip.clear();
-//            }
-//            current = cellType;
-//        } else {
-//            needFlip.add(index);
-//        }
     }
 
     @Override

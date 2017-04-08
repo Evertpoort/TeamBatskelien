@@ -97,7 +97,10 @@ public class View {
         is.setOffsetY(2);
         is.setColor(Color.DIMGREY);
         gc.setEffect(is);
-        gc.setFill(Color.ALICEBLUE);
+        if (cell==Cell.EMPTY_VALID)
+            gc.setFill(Color.CYAN);
+        else
+            gc.setFill(Color.ALICEBLUE);
         gc.fillRect(xpos*offsetx,ypos*offsety,offsetx,offsety);
         gc.setEffect(null);
 

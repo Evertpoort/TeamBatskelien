@@ -1,5 +1,5 @@
 package Model;
 
 public enum Cell {
-	EMPTY, KRUISJE, RONDJE, ZWART, WIT
+	EMPTY, EMPTY_VALID, KRUISJE, RONDJE, ZWART, WIT
 }
