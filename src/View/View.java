@@ -33,6 +33,7 @@ public class View {
     public Model model;
     private Cell[] list;
     private GraphicsContext gc;
+    private InnerShadow is;
 
 //bu
     public View(Stage stage, Model model) {
@@ -42,7 +43,10 @@ public class View {
         this.screenController = new ScreenController(stage, root);
         this.popupscreenController = new ScreenController(stage,root);
         this.model = model;
-
+        is = new InnerShadow();
+        is.setOffsetX(2);
+        is.setOffsetY(2);
+        is.setColor(Color.DIMGREY);
 
         addScene("LoginScreen", "../res/LoginScreen.fxml");
         addScene("LobbyScreen", "../res/LobbyScreen.fxml");
@@ -92,15 +96,12 @@ public class View {
         double textheight= offsety/2;
         gc.setStroke(Color.DARKGREY);
 
-        InnerShadow is = new InnerShadow();
-        is.setOffsetX(2);
-        is.setOffsetY(2);
-        is.setColor(Color.DIMGREY);
         gc.setEffect(is);
         if (cell==Cell.EMPTY_VALID)
             gc.setFill(Color.CYAN);
         else
             gc.setFill(Color.ALICEBLUE);
+        gc.strokeRect(xpos*offsetx,ypos*offsety,offsetx,offsety);
         gc.fillRect(xpos*offsetx,ypos*offsety,offsetx,offsety);
         gc.setEffect(null);
 

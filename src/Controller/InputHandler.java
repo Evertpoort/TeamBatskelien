@@ -147,7 +147,7 @@ help [commando]		Help weergeven
             else if (command.contains("DRAW")){
                 controller.displaystatus("Draw");
             }
-            else if (command.contains("disabled")||command.contains("duplicate")){
+            else if (command.contains("disabled")||command.contains("Duplicate")){
                 controller.backToLogin();
                 }
             else {
