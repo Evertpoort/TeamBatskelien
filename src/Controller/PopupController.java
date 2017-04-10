@@ -113,11 +113,18 @@ public class PopupController {
                 command = "subscribe " + ((RadioButton) gamegroup.getSelectedToggle()).getText();
             }
 
-            if (((RadioButton) typegroup.getSelectedToggle()).getText().equals("Kruisje")){
+            String word = ((RadioButton) typegroup.getSelectedToggle()).getText();
+            if (word.equals("Kruisje")){
                 controller.setCellType(Cell.KRUISJE);
             }
-            else if (((RadioButton) typegroup.getSelectedToggle()).getText().equals("Rondje")){
+            else if (word.equals("Rondje")){
                 controller.setCellType(Cell.RONDJE);
+            }
+            else if (word.equals("Zwart")){
+                controller.setCellType(Cell.ZWART);
+            }
+            else {
+                controller.setCellType(Cell.WIT);
             }
 
             queue.offer(command);
