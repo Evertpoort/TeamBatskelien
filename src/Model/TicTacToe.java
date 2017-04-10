@@ -18,8 +18,7 @@ public class TicTacToe extends Game {
             return false;
         }
         playerTurn = false;
-        board.setCell(index, cellTypePlayer);
-        sendMoveToServer(index);
+        super.move(index);
         return true;
     }
 }

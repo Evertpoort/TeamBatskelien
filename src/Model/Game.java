@@ -51,7 +51,9 @@ public abstract class Game {
     }
 
     public boolean move(int index) {
-        return false;
+        board.setCell(index, cellTypePlayer);
+        sendMoveToServer(index);
+        return true;
     }
 
     public boolean AIMove() {

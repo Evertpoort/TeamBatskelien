@@ -1,13 +1,15 @@
 package Model;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class Othello extends Game {
-    ArrayList<Integer> validIndexes = new ArrayList<>();
+    private final ArrayList<Integer>[] rows;
 
     public Othello(LinkedBlockingQueue<String> outputQueue, boolean playerTurn, Cell cellType){
         super(outputQueue, 8, cellType, cellType == Cell.ZWART ? Cell.WIT : Cell.ZWART);
+        rows = getAllRows();
         if (playerTurn) {
             board.setCell(27, cellTypeOpponent);
             board.setCell(36, cellTypeOpponent);
@@ -19,7 +21,7 @@ public class Othello extends Game {
             board.setCell(28, cellTypeOpponent);
             board.setCell(35, cellTypeOpponent);
         }
-        updateBoard(-1);
+        updateValidIndexesBoard(getValidIndexes());
     }
 
     @Override
@@ -33,107 +35,114 @@ public class Othello extends Game {
             return false;
         }
         playerTurn = false;
-        board.setCell(index, cellTypePlayer);
-        updateBoard(index);
-        updateBoard(-1);
-        sendMoveToServer(index);
+        super.move(index);
+        updateBoard(rows, index);
+        updateValidIndexesBoard(getValidIndexes());
         return true;
     }
 
     @Override
     public void opponentMove(int index) {
         super.opponentMove(index);
-        updateBoard(index);
-        updateBoard(-1);
+        updateBoard(rows, index);
+        updateValidIndexesBoard(getValidIndexes());
     }
 
-    private void updateBoard(int indexMove) {
-        if (indexMove == -1) {
-            for (int i = 0; i < 64; i++) {
-                if (board.getCell(i) == Cell.EMPTY_VALID)
-                    board.setCell(i, Cell.EMPTY);
-            }
-        }
+    // Hoeft maar 1 keer gecalld te worden
+    private ArrayList<Integer>[] getAllRows() {
+        ArrayList<Integer>[] rows = new ArrayList[8+8+15+15];
+        for(int i=0; i < rows.length; i++)
+            rows[i] = new ArrayList<>();
 
         for (int i = 0; i < 8; i++) {
-            for (int j = 0; j < 8; j++)
-                checkCell(getIndex(j, i), indexMove); // Horizontal
-            startIndex = -1;
-            for (int j = 0; j < 8; j++)
-                checkCell(getIndex(i, j), indexMove); // Vertical
-            startIndex = -1;
-            for (int j = 0, k = i; k < 8; j++, k++) {
-                checkCell(getIndex(j, k), indexMove); // Diagonal1
+            for (int j = 0; j < 8; j++) {
+                rows[i].add(getIndex(j, i)); // Horizontal
+                rows[8+i].add(getIndex(i, j)); // Vertical
             }
-            startIndex = -1;
             for (int j = 0, k = i; k < 8; j++, k++) {
-                checkCell(getIndex(k, j), indexMove); // Diagonal1
+                rows[16+i].add(getIndex(j, k)); // Diagonal1
+                if (i != 0)
+                    rows[23+i].add(getIndex(k, j)); // Diagonal1
             }
-            startIndex = -1;
         }
 
         for(int i = 0 ; i < 15; i++) {
             for(int j = 0; j <= i; j++) {
                 int k = i - j;
                 if(k < 8 && j < 8) {
-                    checkCell(getIndex(k, j), indexMove); // Diagonal2
+                    rows[31+i].add(getIndex(k, j)); // Diagonal2
                 }
             }
-            startIndex = -1;
+        }
+
+        return rows;
+    }
+
+    private void updateBoard(ArrayList<Integer>[] rows, int indexMove) {
+        for (ArrayList<Integer> row : rows) { // Elke rij
+            int startIndex = -1;
+            boolean needFlip = false;
+            for (Integer currentIndex : row) { // Controleer elke index per rij
+                Cell cellType = board.getCell(currentIndex);
+                if (cellType == Cell.EMPTY || cellType == Cell.EMPTY_VALID) {
+                    startIndex = -1;
+                    if (needFlip)
+                        needFlip = false;
+                } else if (cellType == board.getCell(indexMove)) { // Cell is van player
+                    if (needFlip) {
+                        if (currentIndex == indexMove || startIndex == indexMove) { // Flip de cells als het bij de move hoort
+                            for (int i = row.indexOf(startIndex) + 1; i < row.indexOf(currentIndex); i++)
+                                board.setCell(row.get(i), cellType);
+                        }
+                        needFlip = false;
+                    }
+                    startIndex = currentIndex;
+                } else if (startIndex != -1) { // Cell is van tegenstander
+                    needFlip = true;
+                }
+            }
         }
     }
 
-    // TODO: Super class functies + betere en meer functies (met betere variabelen)
-    // TODO: Gebruik maken van arrays
-    private int startIndex = -1;
-    private boolean d = false;
-    private ArrayList<Integer> needFlip = new ArrayList<>();
-    private void checkCell(int currentIndex, int clickedIndex) {
-        Cell cellType = board.getCell(currentIndex);
-
-        if (clickedIndex == -1) {
-            if (cellType == Cell.EMPTY || cellType == Cell.EMPTY_VALID) {
-                if (startIndex == -2)
-                    board.setCell(currentIndex, Cell.EMPTY_VALID);
-                startIndex = currentIndex;
-                d = false;
-            } else if (cellType == cellTypeOpponent) {
-                if (startIndex > -1)
-                    d = true;
-                else if (startIndex < -1) {
-                    startIndex = -2;
-                }
-            } else if (cellType == cellTypePlayer) {
-                if (d) {
-                    if (startIndex > -1)
-                        board.setCell(startIndex, Cell.EMPTY_VALID);
-                }
-                startIndex = -3;
-            }
-            return;
-        }
-
-        if (cellType == Cell.EMPTY || cellType == Cell.EMPTY_VALID) {
-            startIndex = -1;
-            if (!needFlip.isEmpty())
-                needFlip.clear();
-        } else if (cellType == board.getCell(clickedIndex)) {
-            if (!needFlip.isEmpty()) {
-                if ((currentIndex == clickedIndex && startIndex != -1) || startIndex == clickedIndex) {
-                    for (int i : needFlip) {
-                        Cell cell = board.getCell(i);
-                        if (cell == Cell.ZWART)
-                            cell = Cell.WIT;
-                        else
-                            cell = Cell.ZWART;
-                        board.setCell(i, cell);
+    private ArrayList<Integer> getValidIndexes() {
+        ArrayList<Integer> validIndexes = new ArrayList<>();
+        for (ArrayList<Integer> row : rows) { // Elke rij
+            int startIndex = -1;
+            boolean c = false;
+            for (Integer currentIndex : row) { // Controleer elke index per rij
+                Cell cellType = board.getCell(currentIndex);
+                if (cellType == Cell.EMPTY || cellType == Cell.EMPTY_VALID) {
+                    if (startIndex == -2) { // Als er cellen zijn geweest van de player en daarna tegenstander cellen (player->tegenstander->currentIndex)
+                        if (!validIndexes.contains(startIndex))
+                            validIndexes.add(currentIndex);
                     }
+                    startIndex = currentIndex;
+                    c = false;
+                } else if (cellType == cellTypeOpponent) {
+                    if (startIndex > -1)
+                        c = true;
+                    else if (startIndex < -1)
+                        startIndex = -2;
+                } else if (cellType == cellTypePlayer) {
+                    if (c && startIndex > -1) { // Als er cellen zijn geweest van de tegenstander en daarna de player cell (startIndex->tegenstander->player)
+                        if (!validIndexes.contains(startIndex))
+                            validIndexes.add(startIndex);
+                    }
+                    startIndex = -3;
                 }
-                needFlip.clear();
             }
-            startIndex = currentIndex;
-        } else if (startIndex != -1) {
-            needFlip.add(currentIndex);
+        }
+        return validIndexes;
+    }
+
+    // Hoeft alleen uitgevoerd te worden wanneer de GUI geupdate moet worden
+    private void updateValidIndexesBoard(ArrayList<Integer> validIndexes) {
+        for (int i = 0; i < 64; i++) {
+            if (validIndexes.contains(i)) {
+                if (board.getCell(i) == Cell.EMPTY)
+                    board.setCell(i, Cell.EMPTY_VALID);
+            } else if (board.getCell(i) == Cell.EMPTY_VALID)
+                    board.setCell(i, Cell.EMPTY);
         }
     }
 
