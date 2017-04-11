@@ -10,6 +10,8 @@ public class Othello extends Game {
     public Othello(LinkedBlockingQueue<String> outputQueue, boolean playerTurn, Cell cellType){
         super(outputQueue, 8, cellType, cellType == Cell.ZWART ? Cell.WIT : Cell.ZWART);
         rows = getAllRows();
+        playerScore = 2;
+        opponentScore = 2;
         if (playerTurn) {
             board[27] = cellTypeOpponent;
             board[36] = cellTypeOpponent;
@@ -36,6 +38,7 @@ public class Othello extends Game {
         }
         playerTurn = false;
         super.move(index);
+        playerScore++;
         updateBoard(rows, index);
         updateValidIndexesBoard(getValidIndexes());
         return true;
@@ -44,6 +47,7 @@ public class Othello extends Game {
     @Override
     public void opponentMove(int index) {
         super.opponentMove(index);
+        opponentScore++;
         updateBoard(rows, index);
         updateValidIndexesBoard(getValidIndexes());
     }
@@ -91,8 +95,16 @@ public class Othello extends Game {
                 } else if (cellType == board[indexMove]) { // Cell is van player
                     if (needFlip) {
                         if (currentIndex == indexMove || startIndex == indexMove) { // Flip de cells als het bij de move hoort
-                            for (int i = row.indexOf(startIndex) + 1; i < row.indexOf(currentIndex); i++)
+                            for (int i = row.indexOf(startIndex) + 1; i < row.indexOf(currentIndex); i++) {
                                 board[row.get(i)] = cellType;
+                                if (cellType == cellTypePlayer) {
+                                    playerScore++;
+                                    opponentScore--;
+                                } else {
+                                    playerScore--;
+                                    opponentScore++;
+                                }
+                            }
                         }
                         needFlip = false;
                     }
@@ -149,16 +161,47 @@ public class Othello extends Game {
     @Override
     public boolean AIMove() {
         ArrayList<Integer> validIndexes = getValidIndexes();
-        int rnd = validIndexes.get(new Random().nextInt(validIndexes.size()));
-        board[rnd] = cellTypePlayer;
+        int s = -1;
+        int bestMove = -1;
+        for (int index : validIndexes) { // Voor elke valid index
+            int score = tryMove(index, true);
+            if (score > s) {
+                bestMove = index;
+                s = score;
+            }
+        }
         try {
             Thread.sleep(1000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        updateBoard(rows, rnd);
+        super.move(bestMove);
+        playerScore++;
+        updateBoard(rows, bestMove);
         updateValidIndexesBoard(getValidIndexes());
-        sendMoveToServer(rnd);
         return true;
+    }
+
+    // Test een move op current board
+    private int tryMove(int index, boolean playerTurn) {
+        // State opgeslagen
+        Cell[] tempBoard = board.clone();
+        int tempPlayerScore = playerScore;
+        int tempOpponentScore = opponentScore;
+
+        // Test move
+        board[index] = cellTypePlayer;
+        updateBoard(rows, index);
+        int score;
+        if (playerTurn)
+            score = playerScore;
+        else
+            score = opponentScore;
+
+        // Reset state
+        board = tempBoard;
+        playerScore = tempPlayerScore;
+        opponentScore = tempOpponentScore;
+        return score;
     }
 }

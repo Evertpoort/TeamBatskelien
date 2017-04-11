@@ -12,6 +12,8 @@ public abstract class Game {
     Cell cellTypePlayer;
     Cell cellTypeOpponent;
     int size;
+    int playerScore = 0;
+    int opponentScore = 0;
 
     public Game(LinkedBlockingQueue<String> outPutQueue, int size, Cell cellTypePlayer, Cell cellTypeOpponent) {
         this.outputQueue = outPutQueue;
@@ -44,6 +46,18 @@ public abstract class Game {
 
     public void setPlayerTurn() {
         playerTurn = true;
+    }
+
+    public boolean getPlayerTurn() {
+        return playerTurn;
+    }
+
+    public int getPlayerScore() {
+        return playerScore;
+    }
+
+    public int getOpponentScore() {
+        return opponentScore;
     }
 
     public void opponentMove(int index) {

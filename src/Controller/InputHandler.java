@@ -105,7 +105,7 @@ forfeit				De huidige match opgeven
 help [commando]		Help weergeven
  */
             if (command.contains("YOURTURN")){
-                controller.setTurnname(controller.getPlayerName());
+                controller.setPlayerTurn(true);
                 if (controller.getAI()) {
                     model.getGame().AIMove();
                 } else {
@@ -127,7 +127,9 @@ help [commando]		Help weergeven
                 }
                 model.makeGame(args.get(1),yourturn,controller.getPlayerCellType());
                 controller.loadgame();
-                controller.onupdate(args.get(0));
+                controller.onupdate();
+                if (yourturn)
+                    controller.setPlayerTurn(true);
                 if (args.get(1).equals("Tic-tac-toe")){
                     controller.hidescorelabels(false);
                 }
@@ -136,7 +138,7 @@ help [commando]		Help weergeven
                 if (!args.get(0).equals(controller.getPlayerName())) {
                     model.getGame().opponentMove(Integer.parseInt(args.get(1)));
                 }
-                controller.onupdate("");
+                controller.onupdate();
             }
             else if (command.contains("CHALLENGENUMBER")&&!command.contains("CANCELLED")){
                 controller.invitereceived(args.get(0), Integer.parseInt(args.get(1)),args.get(2));

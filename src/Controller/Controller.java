@@ -171,8 +171,9 @@ public class Controller {
     popcontr.invitereceived(playername,challengenumber,game);
     }
 
-    public void onupdate(String name){
-       setTurnname(name);
+    public void onupdate(){
+        setPlayerTurn(model.getGame().getPlayerTurn());
+        setScore(model.getGame().getPlayerScore(), model.getGame().getOpponentScore());
         view.drawcanvas(canvas,model.getGame().getBoard());
     }
 
@@ -183,9 +184,9 @@ public class Controller {
         });
     }
 
-    public void setTurnname(String name){
+    public void setPlayerTurn(boolean playerTurn){
         String turnname;
-        if (name.equals(playerName)) {
+        if (playerTurn) {
             if (AI)
                 turnname = "AI";
             else
@@ -195,6 +196,13 @@ public class Controller {
         }
         Platform.runLater(() -> {
             turnLabel.setText(turnname);
+        });
+    }
+
+    public void setScore(int playerScore, int opponentScore) {
+        Platform.runLater(() -> {
+            score1.setText("Your score: " + Integer.toString(playerScore));
+            score2.setText("Opponent's score: " + Integer.toString(opponentScore));
         });
     }
 
