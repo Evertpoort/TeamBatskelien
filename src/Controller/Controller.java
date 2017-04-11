@@ -41,6 +41,8 @@ public class Controller {
     private TextField login;
 
     @FXML
+    private CheckBox checkboxai;
+    @FXML
     private TableView<Table> usertable;
     @FXML
     private TableColumn<Table,String> onlinecolumn;
@@ -201,8 +203,14 @@ public class Controller {
         Platform.runLater(() -> {
             gamebutton.setText("Close");
         });
+        checkai();
     }
 
+    public void checkai(){
+        if (checkboxai.isSelected()){
+            setAI(true);
+        }
+    }
     public void setTurnname(String name){
         String turnname;
         if (name.equals(playerName)) {
