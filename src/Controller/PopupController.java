@@ -52,15 +52,6 @@ public class PopupController {
             popup.setScene(new Scene(pane));
             popup.setTitle("Challenge");
             popup.show();
-            if (game.equals("Tic-tac-toe")) {
-                radiotype21.setText("Kruisje");
-                radiotype22.setText("Rondje");
-                checkboxai1.setDisable(true);
-            } else {
-                radiotype21.setText("Zwart");
-                radiotype22.setText("Wit");
-                checkboxai1.setDisable(false);
-            }
         });
     }
 
@@ -68,24 +59,23 @@ public class PopupController {
     @FXML
     public void inviteaccept(ActionEvent event){
         queue.offer("challenge accept "+ challengenumber);
-        if (((RadioButton) typegroup2.getSelectedToggle()).getText().equals("Kruisje")){
-            controller.setCellType(Cell.KRUISJE);
-        }
-        else if (((RadioButton) typegroup2.getSelectedToggle()).getText().equals("Rondje")){
-            controller.setCellType(Cell.RONDJE);
-        }
-        else if (((RadioButton) typegroup2.getSelectedToggle()).getText().equals("Zwart")){
-
-            controller.setCellType(Cell.ZWART);
+        if (invitelabel.getText().contains("Reversi")){
+            if (controller.prefferedtype.equals("Kruisje/Zwart")){
+                controller.setCellType(Cell.ZWART);
+            }
+            else{
+                controller.setCellType(Cell.WIT);
+            }
         }
         else {
-            controller.setCellType(Cell.WIT);
-        }
-
-        if (checkboxai1.isSelected() && !checkboxai1.isDisabled())
-            controller.setAI(true);
-        else
+            if (controller.prefferedtype.equals("Kruisje/Zwart")){
+                controller.setCellType(Cell.KRUISJE);
+            }
+            else {
+                controller.setCellType(Cell.RONDJE);
+            }
             controller.setAI(false);
+        }
 
         Stage stage = (Stage) ((Button) event.getSource()).getScene().getWindow();
         stage.close();
@@ -108,32 +98,31 @@ public class PopupController {
             System.out.println("No selected player");
         }
         else {
+            String game =((RadioButton) gamegroup.getSelectedToggle()).getText();
             if (randomqueue == false) {
                 command = "Challenge " + "\"" + selectedPlayer + "\""
-                        + "\"" + ((RadioButton) gamegroup.getSelectedToggle()).getText() + "\"";
+                        + "\"" + game  + "\"";
             } else {
-                command = "subscribe " + ((RadioButton) gamegroup.getSelectedToggle()).getText();
+                command = "subscribe " + game;
             }
 
-            String word = ((RadioButton) typegroup.getSelectedToggle()).getText();
-            if (word.equals("Kruisje")){
-                controller.setCellType(Cell.KRUISJE);
-            }
-            else if (word.equals("Rondje")){
-                controller.setCellType(Cell.RONDJE);
-            }
-            else if (word.equals("Zwart")){
-                controller.setCellType(Cell.ZWART);
+            if (game.equals("Reversi")) {
+                if (controller.prefferedtype.equals("Kruisje/Zwart")){
+                    controller.setCellType(Cell.ZWART);
+                }
+                else{
+                    controller.setCellType(Cell.WIT);
+                }
             }
             else {
-                controller.setCellType(Cell.WIT);
-            }
-
-            if (checkboxai.isSelected() && !checkboxai.isDisabled())
-                controller.setAI(true);
-            else
+                if (controller.prefferedtype.equals("Kruisje/Zwart")){
+                    controller.setCellType(Cell.KRUISJE);
+                }
+                else {
+                    controller.setCellType(Cell.RONDJE);
+                }
                 controller.setAI(false);
-
+            }
             queue.offer(command);
         }
         Stage stage = (Stage) ((Button) event.getSource()).getScene().getWindow();
@@ -149,21 +138,6 @@ public class PopupController {
         popup.setScene(new Scene(pane));
         popup.setTitle("Challenge");
         popup.show();
-    }
-
-    @FXML
-    public void gamegroupaction(ActionEvent event){
-        String word =((RadioButton)event.getSource()).getText();
-        if (word.equals("Tic-tac-toe")){
-            radiotype1.setText("Kruisje");
-            radiotype2.setText("Rondje");
-            checkboxai.setDisable(true);
-        }
-        else {
-            checkboxai.setDisable(false);
-            radiotype1.setText("Zwart");
-            radiotype2.setText("Wit");
-        }
     }
 
     public void subscribeopen(){
