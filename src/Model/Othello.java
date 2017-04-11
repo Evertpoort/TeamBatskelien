@@ -176,16 +176,15 @@ public class Othello extends Game {
         ArrayList<Integer> validIndexes = getValidIndexes(board);
         Cell[] currentboard;
         int searchdepth = 4;
-        int best = Integer.MIN_VALUE;
+        int best= Integer.MIN_VALUE;
         int bestMove = -1;
         int currentbest;
         for (int index : validIndexes) {
-//            System.out.println("Current valid index in current board: " + index);
             currentboard = board.clone();
             currentboard[index] = cellTypePlayer;
             updateBoard(currentboard, false, index);
             currentbest = findbest(currentboard, getValidIndexes(currentboard), searchdepth, cellTypePlayer);
-            if (currentbest >= best) {
+            if (currentbest >= best || best== Integer.MIN_VALUE) {
                 best = currentbest;
                 bestMove = index;
             }
@@ -203,8 +202,6 @@ public class Othello extends Game {
             return countscore(board);
         } else {
             searchdepth--;
-//            System.out.println(searchdepth);
-//            System.out.println(currenntturn);
             Cell[] currentboard;
             // TODO: Rekening houden met dat ie soms achter elkaar aan de beurt is
             if (currenntturn == cellTypePlayer)
@@ -218,11 +215,11 @@ public class Othello extends Game {
                 updateBoard(currentboard, false, index);
                 int currenentresult = findbest(currentboard, getValidIndexes(currentboard), searchdepth, currenntturn);
                 if (currenntturn == cellTypePlayer) {
-                    if (currenentresult > resultaat) {
+                    if (currenentresult > resultaat || resultaat ==Integer.MIN_VALUE) {
                         resultaat = currenentresult;
                     }
                 } else {
-                    if (currenentresult < resultaat) {
+                    if (currenentresult < resultaat|| resultaat ==Integer.MIN_VALUE) {
                         resultaat = currenentresult;
                     }
                 }
@@ -233,7 +230,6 @@ public class Othello extends Game {
 
     private int countscore(Cell[] currentboard) {
         int score = 0;
-
         for (int i = 0; i < 64; i++) {
             if (currentboard[i] == cellTypePlayer) {
                 score += valuetable[i];
@@ -241,7 +237,6 @@ public class Othello extends Game {
                 score -= valuetable[i];
             }
         }
-        System.out.println("Score: " + score);
         return score;
     }
 }
