@@ -96,7 +96,7 @@ public class View {
         double textheight= offsety/2;
         gc.setStroke(Color.DARKGREY);
 
-        gc.setEffect(is);
+        //gc.setEffect(is);
         if (cell==Cell.EMPTY_VALID)
             gc.setFill(Color.CYAN);
         else
