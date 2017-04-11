@@ -32,11 +32,16 @@ public class Controller {
     @FXML
     ComboBox<String> combobox;
     @FXML
-    private RadioButton radiogame1,radiogame2;
+    private RadioButton radiotype1,radiotype2;
+
+    @FXML
+    private ToggleGroup typegroup1;
 
     @FXML
     private TextField login;
 
+    @FXML
+    private CheckBox checkboxai;
     @FXML
     private TableView<Table> usertable;
     @FXML
@@ -54,6 +59,7 @@ public class Controller {
     private boolean AI;
     private Cell cellType;
     public PopupController popcontr;
+    public String prefferedtype= "Kruisje/Zwart";
 
     public Controller(View view,Model model){
         this.view= view;
@@ -132,6 +138,22 @@ public class Controller {
     public void openchallenge(ActionEvent event){
         popcontr.openchallenge();
     }
+    @FXML
+    public void radiotypeselected(ActionEvent event){
+        String word=((RadioButton)event.getSource()).getText();
+        if (!word.equals(prefferedtype))
+        {prefferedtype=word;}
+    }
+
+    @FXML
+    public void checkboxsel(ActionEvent event){
+        if (((CheckBox)event.getSource()).isSelected()){
+            setAI(true);
+        }
+        else {
+            setAI(false);
+        }
+    }
 
     public void updateplayerlist(String[] list){
         data.clear();
@@ -182,8 +204,14 @@ public class Controller {
         Platform.runLater(() -> {
             gamebutton.setText("Close");
         });
+        checkai();
     }
 
+    public void checkai(){
+        if (checkboxai.isSelected()){
+            setAI(true);
+        }
+    }
     public void setPlayerTurn(boolean playerTurn){
         String turnname;
         if (playerTurn) {

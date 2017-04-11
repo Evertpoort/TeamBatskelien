@@ -2,16 +2,19 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.RadioButton?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.ToggleGroup?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1">
+<GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="394.0" prefWidth="462.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1">
   <columnConstraints>
-    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+    <ColumnConstraints hgrow="SOMETIMES" maxWidth="300.0" minWidth="120.0" prefWidth="300.0" />
+    <ColumnConstraints hgrow="SOMETIMES" maxWidth="192.0" minWidth="10.0" prefWidth="163.0" />
   </columnConstraints>
   <rowConstraints>
     <RowConstraints maxHeight="400.0" minHeight="10.0" prefHeight="390.0" vgrow="SOMETIMES" />
@@ -19,12 +22,12 @@
    <children>
       <GridPane GridPane.rowSpan="2147483647">
         <columnConstraints>
-          <ColumnConstraints hgrow="SOMETIMES" maxWidth="120.0" minWidth="10.0" prefWidth="120.0" />
-            <ColumnConstraints hgrow="SOMETIMES" maxWidth="120.0" minWidth="10.0" prefWidth="120.0" />
+          <ColumnConstraints hgrow="SOMETIMES" maxWidth="120.0" minWidth="120.0" prefWidth="120.0" />
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="120.0" minWidth="120.0" prefWidth="120.0" />
         </columnConstraints>
         <rowConstraints>
-          <RowConstraints maxHeight="304.0" minHeight="10.0" prefHeight="285.0" vgrow="SOMETIMES" />
-          <RowConstraints maxHeight="40.0" minHeight="10.0" prefHeight="37.0" vgrow="SOMETIMES" />
+          <RowConstraints maxHeight="304.0" minHeight="285.0" prefHeight="285.0" vgrow="SOMETIMES" />
+          <RowConstraints maxHeight="40.0" minHeight="37.0" prefHeight="37.0" vgrow="SOMETIMES" />
         </rowConstraints>
          <GridPane.margin>
             <Insets bottom="30.0" left="30.0" right="30.0" top="30.0" />
@@ -49,18 +52,50 @@
       </GridPane>
       <GridPane GridPane.columnIndex="1">
         <columnConstraints>
-          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+          <ColumnConstraints hgrow="SOMETIMES" />
         </columnConstraints>
         <rowConstraints>
-          <RowConstraints maxHeight="107.0" minHeight="10.0" prefHeight="82.0" vgrow="SOMETIMES" />
-          <RowConstraints maxHeight="194.0" minHeight="10.0" prefHeight="142.0" vgrow="SOMETIMES" />
-          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="183.0" minHeight="10.0" prefHeight="35.0" vgrow="SOMETIMES" />
+          <RowConstraints maxHeight="183.0" minHeight="10.0" prefHeight="99.0" vgrow="SOMETIMES" />
+          <RowConstraints maxHeight="1.7976931348623157E308" minHeight="59.0" prefHeight="71.0" vgrow="SOMETIMES" />
+          <RowConstraints maxHeight="240.0" minHeight="10.0" prefHeight="189.0" vgrow="SOMETIMES" />
         </rowConstraints>
          <children>
-            <Button mnemonicParsing="false" onAction="#subscribebutton" text="Queue" GridPane.columnSpan="2147483647" GridPane.halignment="CENTER">
+            <CheckBox fx:id="checkboxai" mnemonicParsing="false" onAction="#checkboxsel" text="Enable AI" GridPane.halignment="LEFT" GridPane.rowIndex="2" GridPane.valignment="CENTER">
                <GridPane.margin>
-                  <Insets right="10.0" />
+                  <Insets bottom="10.0" left="10.0" top="10.0" />
+               </GridPane.margin>
+            </CheckBox>
+            <GridPane prefHeight="80.0" prefWidth="164.0" GridPane.rowIndex="1">
+              <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+              </columnConstraints>
+              <rowConstraints>
+                <RowConstraints maxHeight="94.0" minHeight="10.0" prefHeight="57.0" vgrow="SOMETIMES" />
+                <RowConstraints maxHeight="79.0" minHeight="10.0" prefHeight="46.0" vgrow="SOMETIMES" />
+              </rowConstraints>
+               <children>
+                  <RadioButton fx:id="radiotype1" mnemonicParsing="false" onAction="#radiotypeselected" prefHeight="33.0" prefWidth="117.0" selected="true" text="Kruisje/Zwart">
+                     <GridPane.margin>
+                        <Insets left="10.0" right="10.0" top="10.0" />
+                     </GridPane.margin>
+                     <toggleGroup>
+                        <ToggleGroup fx:id="typegroup1" />
+                     </toggleGroup>
+                  </RadioButton>
+                  <RadioButton fx:id="radiotype2" mnemonicParsing="false" onAction="#radiotypeselected" text="Rondje/Wit" toggleGroup="$typegroup1" GridPane.rowIndex="1">
+                     <GridPane.margin>
+                        <Insets left="10.0" right="10.0" />
+                     </GridPane.margin>
+                  </RadioButton>
+               </children>
+               <GridPane.margin>
+                  <Insets top="10.0" />
+               </GridPane.margin>
+            </GridPane>
+            <Button mnemonicParsing="false" onAction="#subscribebutton" text="Queue" GridPane.halignment="CENTER" GridPane.rowIndex="3" GridPane.valignment="BOTTOM">
+               <GridPane.margin>
+                  <Insets bottom="35.0" right="25.0" />
                </GridPane.margin>
             </Button>
          </children>

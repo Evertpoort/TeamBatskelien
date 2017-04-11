@@ -205,3 +205,78 @@ public class Othello extends Game {
         return score;
     }
 }
+
+// @Override
+//public boolean AIMove() {
+//    ArrayList<Integer> list = new ArrayList<>(); // to replace..
+//    Board currentboard;
+//    int searchdepth=  3;
+//    int best=Integer.MIN_VALUE;
+//    int bestindex;
+//    int currentbest;
+//    boolean currentturn;
+//    for (int i= 0; i<list.size(); i++){
+//        currentboard=board;
+//        currentturn= playerTurn;
+//        // makemove on the currentboard
+//        currentbest=findbest(currentboard,list, searchdepth, currentturn);
+//        if (currentbest>=best){
+//            best=currentbest;
+//            bestindex=i;
+//        }
+//    }
+//    return false; // AI
+//}
+//
+//    public int findbest(Board currentboard, ArrayList<Integer> validIndexes,int searchdepth,boolean currenntturn){
+//        int resultaat= Integer.MIN_VALUE;
+//        if (searchdepth==0){
+//            return countscore(currentboard);
+//        }
+//        else {
+//            for (int i= 0; i< validIndexes.size(); i++){
+//                //makemoveon theboard
+//                int currenentresult= findbest(currentboard,validIndexes,searchdepth--,currenntturn)
+//                if (currenntturn){
+//                    if(resultaat<currenentresult){
+//                        resultaat=currenentresult;
+//                    }
+//                }
+//                else {
+//                    if(resultaat>currenentresult){
+//                        resultaat=currenentresult;
+//                    }
+//                }
+//            }
+//        }
+//
+//        return resultaat;
+//    }
+//
+//    private static final int[] valuetable = {
+//            50, -10,   5,  3,  3,  5, -10,  50,
+//            -10,-20,  -3, -3, -3, -3, -20, -10,
+//            5,  -3 ,   1,  1,  1,  1, -3,    5,
+//            3,  -3,    1,  0,  0,  1, -3,    3,
+//            3,  -3,    1,  0,  0,  1, -3,    3,
+//            5,  -3 ,   1,  1,  1,  1, -3,    5,
+//            -10,-20,  -3, -3, -3, -3, -20, -10,
+//            50, -10,   5,  3,  3,  5, -10,  50,
+//    };
+//    public int countscore (Board currentboard){
+//        Cell[] cells = currentboard.getCells();
+//        int score = 0;
+//
+//        for (int i= 0; i<cells.length; i++){
+//            int value;
+//
+//            value= valuetable[i];
+//            if (cells[i]==cellTypePlayer){
+//                score=+value;
+//            }
+//            else {
+//                score=-value;
+//            }
+//        }
+//        return score;
+//    }
