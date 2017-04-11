@@ -13,9 +13,6 @@ import javafx.stage.Stage;
 import javax.naming.ldap.Control;
 import java.util.concurrent.LinkedBlockingQueue;
 
-/**
- * Created by mark on 5-4-2017.
- */
 public class PopupController {
 
     @FXML
@@ -85,6 +82,11 @@ public class PopupController {
             controller.setCellType(Cell.WIT);
         }
 
+        if (checkboxai1.isSelected() && !checkboxai1.isDisabled())
+            controller.setAI(true);
+        else
+            controller.setAI(false);
+
         Stage stage = (Stage) ((Button) event.getSource()).getScene().getWindow();
         stage.close();
     }
@@ -126,6 +128,11 @@ public class PopupController {
             else {
                 controller.setCellType(Cell.WIT);
             }
+
+            if (checkboxai.isSelected() && !checkboxai.isDisabled())
+                controller.setAI(true);
+            else
+                controller.setAI(false);
 
             queue.offer(command);
         }

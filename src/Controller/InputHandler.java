@@ -105,9 +105,12 @@ forfeit				De huidige match opgeven
 help [commando]		Help weergeven
  */
             if (command.contains("YOURTURN")){
-                model.getGame().setPlayerTurn();
-                // if ai: do ai move + update GUI
                 controller.setTurnname(controller.getPlayerName());
+                if (controller.getAI()) {
+                    model.getGame().AIMove();
+                } else {
+                    model.getGame().setPlayerTurn();
+                }
             }
 
             else if(command.contains("PLAYERLIST")){

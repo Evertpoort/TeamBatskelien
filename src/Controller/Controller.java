@@ -50,11 +50,8 @@ public class Controller {
 
     final ObservableList<Table> data = FXCollections.observableArrayList(
     );
-    private String selectedPlayer;
-    private boolean randomqueue= false;
-    private int challengenumber;
     private String playerName;
-    private String opponentName;
+    private boolean AI;
     private Cell cellType;
     public PopupController popcontr;
 
@@ -81,14 +78,12 @@ public class Controller {
     }
 
 
-    public String getSelectedPlayer;
-
-    public String getOpponentName() {
-        return opponentName;
+    public boolean getAI() {
+        return AI;
     }
 
-    public void setOpponentName(String opponentName) {
-        this.opponentName = opponentName;
+    public void setAI(boolean AI) {
+        this.AI = AI;
     }
 
     @FXML
@@ -190,11 +185,13 @@ public class Controller {
 
     public void setTurnname(String name){
         String turnname;
-        if (name.equals(playerName)){
-            turnname= "You";
-        }
-        else {
-            turnname="Opponent";
+        if (name.equals(playerName)) {
+            if (AI)
+                turnname = "AI";
+            else
+                turnname = "You";
+        } else {
+            turnname ="Opponent";
         }
         Platform.runLater(() -> {
             turnLabel.setText(turnname);

@@ -1,7 +1,7 @@
 package Model;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Random;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class Othello extends Game {
@@ -148,6 +148,17 @@ public class Othello extends Game {
 
     @Override
     public boolean AIMove() {
-        return false; // AI
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        ArrayList<Integer> validIndexes = getValidIndexes();
+        int rnd = validIndexes.get(new Random().nextInt(validIndexes.size()));
+        board.setCell(rnd, cellTypePlayer);
+        updateBoard(rows, rnd);
+        updateValidIndexesBoard(getValidIndexes());
+        sendMoveToServer(rnd);
+        return true;
     }
 }
