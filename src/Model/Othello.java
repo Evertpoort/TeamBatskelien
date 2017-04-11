@@ -11,15 +11,15 @@ public class Othello extends Game {
         super(outputQueue, 8, cellType, cellType == Cell.ZWART ? Cell.WIT : Cell.ZWART);
         rows = getAllRows();
         if (playerTurn) {
-            board.setCell(27, cellTypeOpponent);
-            board.setCell(36, cellTypeOpponent);
-            board.setCell(28, cellTypePlayer);
-            board.setCell(35, cellTypePlayer);
+            board[27] = cellTypeOpponent;
+            board[36] = cellTypeOpponent;
+            board[28] = cellTypePlayer;
+            board[35] = cellTypePlayer;
         } else {
-            board.setCell(27, cellTypePlayer);
-            board.setCell(36, cellTypePlayer);
-            board.setCell(28, cellTypeOpponent);
-            board.setCell(35, cellTypeOpponent);
+            board[27] = cellTypePlayer;
+            board[36] = cellTypePlayer;
+            board[28] = cellTypeOpponent;
+            board[35] = cellTypeOpponent;
         }
         updateValidIndexesBoard(getValidIndexes());
     }
@@ -30,7 +30,7 @@ public class Othello extends Game {
             System.out.println("It's not your turn!");
             return false;
         }
-        if (board.getCell(index) != Cell.EMPTY_VALID) {
+        if (board[index] != Cell.EMPTY_VALID) {
             System.out.println("Not a valid move!");
             return false;
         }
@@ -83,16 +83,16 @@ public class Othello extends Game {
             int startIndex = -1;
             boolean needFlip = false;
             for (Integer currentIndex : row) { // Controleer elke index per rij
-                Cell cellType = board.getCell(currentIndex);
+                Cell cellType = board[currentIndex];
                 if (cellType == Cell.EMPTY || cellType == Cell.EMPTY_VALID) {
                     startIndex = -1;
                     if (needFlip)
                         needFlip = false;
-                } else if (cellType == board.getCell(indexMove)) { // Cell is van player
+                } else if (cellType == board[indexMove]) { // Cell is van player
                     if (needFlip) {
                         if (currentIndex == indexMove || startIndex == indexMove) { // Flip de cells als het bij de move hoort
                             for (int i = row.indexOf(startIndex) + 1; i < row.indexOf(currentIndex); i++)
-                                board.setCell(row.get(i), cellType);
+                                board[row.get(i)] = cellType;
                         }
                         needFlip = false;
                     }
@@ -110,7 +110,7 @@ public class Othello extends Game {
             int startIndex = -1;
             boolean c = false;
             for (Integer currentIndex : row) { // Controleer elke index per rij
-                Cell cellType = board.getCell(currentIndex);
+                Cell cellType = board[currentIndex];
                 if (cellType == Cell.EMPTY || cellType == Cell.EMPTY_VALID) {
                     if (startIndex == -2) { // Als er cellen zijn geweest van de player en daarna tegenstander cellen (player->tegenstander->currentIndex)
                         if (!validIndexes.contains(startIndex))
@@ -139,23 +139,23 @@ public class Othello extends Game {
     private void updateValidIndexesBoard(ArrayList<Integer> validIndexes) {
         for (int i = 0; i < 64; i++) {
             if (validIndexes.contains(i)) {
-                if (board.getCell(i) == Cell.EMPTY)
-                    board.setCell(i, Cell.EMPTY_VALID);
-            } else if (board.getCell(i) == Cell.EMPTY_VALID)
-                    board.setCell(i, Cell.EMPTY);
+                if (board[i] == Cell.EMPTY)
+                    board[i] = Cell.EMPTY_VALID;
+            } else if (board[i] == Cell.EMPTY_VALID)
+                    board[i] = Cell.EMPTY;
         }
     }
 
     @Override
     public boolean AIMove() {
+        ArrayList<Integer> validIndexes = getValidIndexes();
+        int rnd = validIndexes.get(new Random().nextInt(validIndexes.size()));
+        board[rnd] = cellTypePlayer;
         try {
             Thread.sleep(1000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        ArrayList<Integer> validIndexes = getValidIndexes();
-        int rnd = validIndexes.get(new Random().nextInt(validIndexes.size()));
-        board.setCell(rnd, cellTypePlayer);
         updateBoard(rows, rnd);
         updateValidIndexesBoard(getValidIndexes());
         sendMoveToServer(rnd);

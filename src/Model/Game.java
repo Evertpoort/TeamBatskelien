@@ -1,10 +1,13 @@
 package Model;
 
+import java.util.Arrays;
 import java.util.concurrent.LinkedBlockingQueue;
+
+import static java.lang.Math.pow;
 
 public abstract class Game {
     LinkedBlockingQueue<String> outputQueue;
-    Board board;
+    Cell[] board;
     boolean playerTurn = false;
     Cell cellTypePlayer;
     Cell cellTypeOpponent;
@@ -13,7 +16,8 @@ public abstract class Game {
     public Game(LinkedBlockingQueue<String> outPutQueue, int size, Cell cellTypePlayer, Cell cellTypeOpponent) {
         this.outputQueue = outPutQueue;
         this.size = size;
-        this.board = new Board(size);
+        this.board = new Cell[(int)(pow(size, 2))];
+        Arrays.fill(this.board, Cell.EMPTY);
         this.cellTypePlayer = cellTypePlayer;
         this.cellTypeOpponent = cellTypeOpponent;
     }
@@ -35,7 +39,7 @@ public abstract class Game {
     }
 
     public Cell[] getBoard() {
-        return board.getCells();
+        return board;
     }
 
     public void setPlayerTurn() {
@@ -43,7 +47,7 @@ public abstract class Game {
     }
 
     public void opponentMove(int index) {
-        board.setCell(index, cellTypeOpponent);
+        board[index] = cellTypeOpponent;
     }
 
     public boolean move(int x, int y) {
@@ -51,7 +55,7 @@ public abstract class Game {
     }
 
     public boolean move(int index) {
-        board.setCell(index, cellTypePlayer);
+        board[index] = cellTypePlayer;
         sendMoveToServer(index);
         return true;
     }

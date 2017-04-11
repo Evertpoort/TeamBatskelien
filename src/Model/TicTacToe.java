@@ -13,7 +13,7 @@ public class TicTacToe extends Game {
             System.out.println("It's not your turn!");
             return false;
         }
-        if (board.getCell(index) != Cell.EMPTY) {
+        if (board[index] != Cell.EMPTY) {
             System.out.println("Cell not empty!");
             return false;
         }
