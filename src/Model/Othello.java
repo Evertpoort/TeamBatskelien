@@ -6,8 +6,19 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 public class Othello extends Game {
     private final ArrayList<Integer>[] rows;
+    private static final int[] valuetable = {
+            50, -10, 5, 3, 3, 5, -10, 50,
+            -10, -20, -3, -3, -3, -3, -20, -10,
+            5, -3, 1, 1, 1, 1, -3, 5,
+            3, -3, 1, 0, 0, 1, -3, 3,
+            3, -3, 1, 0, 0, 1, -3, 3,
+            5, -3, 1, 1, 1, 1, -3, 5,
+            -10, -20, -3, -3, -3, -3, -20, -10,
+            50, -10, 5, 3, 3, 5, -10, 50,
+    };
+    private static final int timeout = 9;
 
-    public Othello(LinkedBlockingQueue<String> outputQueue, boolean playerTurn, Cell cellType){
+    public Othello(LinkedBlockingQueue<String> outputQueue, boolean playerTurn, Cell cellType) {
         super(outputQueue, 8, cellType, cellType == Cell.ZWART ? Cell.WIT : Cell.ZWART);
         rows = getAllRows();
         playerScore = 2;
@@ -23,7 +34,7 @@ public class Othello extends Game {
             board[28] = cellTypeOpponent;
             board[35] = cellTypeOpponent;
         }
-        updateValidIndexesBoard(getValidIndexes());
+        updateValidIndexesBoard(board,getValidIndexes(board));
     }
 
     @Override
@@ -39,8 +50,8 @@ public class Othello extends Game {
         playerTurn = false;
         super.move(index);
         playerScore++;
-        updateBoard(rows, index);
-        updateValidIndexesBoard(getValidIndexes());
+        updateBoard(board, true, index);
+        updateValidIndexesBoard(board,getValidIndexes(board));
         return true;
     }
 
@@ -48,8 +59,8 @@ public class Othello extends Game {
     public void opponentMove(int index) {
         super.opponentMove(index);
         opponentScore++;
-        updateBoard(rows, index);
-        updateValidIndexesBoard(getValidIndexes());
+        updateBoard(board, true, index);
+        updateValidIndexesBoard(board,getValidIndexes(board));
     }
 
     // Hoeft maar 1 keer gecalld te worden
@@ -82,7 +93,7 @@ public class Othello extends Game {
         return rows;
     }
 
-    private void updateBoard(ArrayList<Integer>[] rows, int indexMove) {
+    private void updateBoard(Cell[] board, boolean updateScores, int indexMove) {
         for (ArrayList<Integer> row : rows) { // Elke rij
             int startIndex = -1;
             boolean needFlip = false;
@@ -97,12 +108,14 @@ public class Othello extends Game {
                         if (currentIndex == indexMove || startIndex == indexMove) { // Flip de cells als het bij de move hoort
                             for (int i = row.indexOf(startIndex) + 1; i < row.indexOf(currentIndex); i++) {
                                 board[row.get(i)] = cellType;
-                                if (cellType == cellTypePlayer) {
-                                    playerScore++;
-                                    opponentScore--;
-                                } else {
-                                    playerScore--;
-                                    opponentScore++;
+                                if (updateScores) {
+                                    if (cellType == cellTypePlayer) {
+                                        playerScore++;
+                                        opponentScore--;
+                                    } else {
+                                        playerScore--;
+                                        opponentScore++;
+                                    }
                                 }
                             }
                         }
@@ -116,7 +129,7 @@ public class Othello extends Game {
         }
     }
 
-    private ArrayList<Integer> getValidIndexes() {
+    private ArrayList<Integer> getValidIndexes(Cell[] board) {
         ArrayList<Integer> validIndexes = new ArrayList<>();
         for (ArrayList<Integer> row : rows) { // Elke rij
             int startIndex = -1;
@@ -148,135 +161,87 @@ public class Othello extends Game {
     }
 
     // Hoeft alleen uitgevoerd te worden wanneer de GUI geupdate moet worden
-    private void updateValidIndexesBoard(ArrayList<Integer> validIndexes) {
+    private void updateValidIndexesBoard(Cell[] board, ArrayList<Integer> validIndexes) {
         for (int i = 0; i < 64; i++) {
             if (validIndexes.contains(i)) {
                 if (board[i] == Cell.EMPTY)
                     board[i] = Cell.EMPTY_VALID;
             } else if (board[i] == Cell.EMPTY_VALID)
-                    board[i] = Cell.EMPTY;
+                board[i] = Cell.EMPTY;
         }
     }
 
     @Override
     public boolean AIMove() {
-        ArrayList<Integer> validIndexes = getValidIndexes();
-        int s = -1;
+        ArrayList<Integer> validIndexes = getValidIndexes(board);
+        Cell[] currentboard;
+        int searchdepth = 4;
+        int best = Integer.MIN_VALUE;
         int bestMove = -1;
-        for (int index : validIndexes) { // Voor elke valid index
-            int score = tryMove(index, true);
-            if (score > s) {
+        int currentbest;
+        for (int index : validIndexes) {
+//            System.out.println("Current valid index in current board: " + index);
+            currentboard = board.clone();
+            currentboard[index] = cellTypePlayer;
+            updateBoard(currentboard, false, index);
+            currentbest = findbest(currentboard, getValidIndexes(currentboard), searchdepth, cellTypePlayer);
+            if (currentbest >= best) {
+                best = currentbest;
                 bestMove = index;
-                s = score;
             }
-        }
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
         }
         super.move(bestMove);
         playerScore++;
-        updateBoard(rows, bestMove);
-        updateValidIndexesBoard(getValidIndexes());
+        updateBoard(board, true, bestMove);
+        updateValidIndexesBoard(board, getValidIndexes(board));
         return true;
     }
 
-    // Test een move op current board
-    private int tryMove(int index, boolean playerTurn) {
-        // State opgeslagen
-        Cell[] tempBoard = board.clone();
-        int tempPlayerScore = playerScore;
-        int tempOpponentScore = opponentScore;
+    public int findbest(Cell[] board, ArrayList<Integer> validIndexes, int searchdepth, Cell currenntturn) {
+        int resultaat = Integer.MIN_VALUE;
+        if (searchdepth == 0) {
+            return countscore(board);
+        } else {
+            searchdepth--;
+//            System.out.println(searchdepth);
+//            System.out.println(currenntturn);
+            Cell[] currentboard;
+            // TODO: Rekening houden met dat ie soms achter elkaar aan de beurt is
+            if (currenntturn == cellTypePlayer)
+                currenntturn = cellTypeOpponent;
+            else
+                currenntturn = cellTypePlayer;
+            for (int index : validIndexes) {
+//                System.out.println("Current valid index in board depth " + searchdepth + ": " + index);
+                currentboard = board.clone();
+                currentboard[index] = currenntturn;
+                updateBoard(currentboard, false, index);
+                int currenentresult = findbest(currentboard, getValidIndexes(currentboard), searchdepth, currenntturn);
+                if (currenntturn == cellTypePlayer) {
+                    if (currenentresult > resultaat) {
+                        resultaat = currenentresult;
+                    }
+                } else {
+                    if (currenentresult < resultaat) {
+                        resultaat = currenentresult;
+                    }
+                }
+            }
+        }
+        return resultaat;
+    }
 
-        // Test move
-        board[index] = cellTypePlayer;
-        updateBoard(rows, index);
-        int score;
-        if (playerTurn)
-            score = playerScore;
-        else
-            score = opponentScore;
+    private int countscore(Cell[] currentboard) {
+        int score = 0;
 
-        // Reset state
-        board = tempBoard;
-        playerScore = tempPlayerScore;
-        opponentScore = tempOpponentScore;
+        for (int i = 0; i < 64; i++) {
+            if (currentboard[i] == cellTypePlayer) {
+                score += valuetable[i];
+            } else if (currentboard[i]==cellTypeOpponent){
+                score -= valuetable[i];
+            }
+        }
+        System.out.println("Score: " + score);
         return score;
     }
 }
-
-// @Override
-//public boolean AIMove() {
-//    ArrayList<Integer> list = new ArrayList<>(); // to replace..
-//    Board currentboard;
-//    int searchdepth=  3;
-//    int best=Integer.MIN_VALUE;
-//    int bestindex;
-//    int currentbest;
-//    boolean currentturn;
-//    for (int i= 0; i<list.size(); i++){
-//        currentboard=board;
-//        currentturn= playerTurn;
-//        // makemove on the currentboard
-//        currentbest=findbest(currentboard,list, searchdepth, currentturn);
-//        if (currentbest>=best){
-//            best=currentbest;
-//            bestindex=i;
-//        }
-//    }
-//    return false; // AI
-//}
-//
-//    public int findbest(Board currentboard, ArrayList<Integer> validIndexes,int searchdepth,boolean currenntturn){
-//        int resultaat= Integer.MIN_VALUE;
-//        if (searchdepth==0){
-//            return countscore(currentboard);
-//        }
-//        else {
-//            for (int i= 0; i< validIndexes.size(); i++){
-//                //makemoveon theboard
-//                int currenentresult= findbest(currentboard,validIndexes,searchdepth--,currenntturn)
-//                if (currenntturn){
-//                    if(resultaat<currenentresult){
-//                        resultaat=currenentresult;
-//                    }
-//                }
-//                else {
-//                    if(resultaat>currenentresult){
-//                        resultaat=currenentresult;
-//                    }
-//                }
-//            }
-//        }
-//
-//        return resultaat;
-//    }
-//
-//    private static final int[] valuetable = {
-//            50, -10,   5,  3,  3,  5, -10,  50,
-//            -10,-20,  -3, -3, -3, -3, -20, -10,
-//            5,  -3 ,   1,  1,  1,  1, -3,    5,
-//            3,  -3,    1,  0,  0,  1, -3,    3,
-//            3,  -3,    1,  0,  0,  1, -3,    3,
-//            5,  -3 ,   1,  1,  1,  1, -3,    5,
-//            -10,-20,  -3, -3, -3, -3, -20, -10,
-//            50, -10,   5,  3,  3,  5, -10,  50,
-//    };
-//    public int countscore (Board currentboard){
-//        Cell[] cells = currentboard.getCells();
-//        int score = 0;
-//
-//        for (int i= 0; i<cells.length; i++){
-//            int value;
-//
-//            value= valuetable[i];
-//            if (cells[i]==cellTypePlayer){
-//                score=+value;
-//            }
-//            else {
-//                score=-value;
-//            }
-//        }
-//        return score;
-//    }
