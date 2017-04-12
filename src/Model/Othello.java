@@ -3,6 +3,7 @@ package Model;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
 
 public class Othello extends Game {
     private final ArrayList<Integer>[] rows;
@@ -34,7 +35,7 @@ public class Othello extends Game {
             board[28] = cellTypeOpponent;
             board[35] = cellTypeOpponent;
         }
-        updateValidIndexesBoard(board,getValidIndexes(board));
+        updateValidIndexesBoard(board,getValidIndexes(board, cellTypePlayer));
     }
 
     @Override
@@ -51,7 +52,7 @@ public class Othello extends Game {
         super.move(index);
         playerScore++;
         updateBoard(board, true, index);
-        updateValidIndexesBoard(board,getValidIndexes(board));
+        updateValidIndexesBoard(board,getValidIndexes(board, cellTypePlayer));
         return true;
     }
 
@@ -60,7 +61,7 @@ public class Othello extends Game {
         super.opponentMove(index);
         opponentScore++;
         updateBoard(board, true, index);
-        updateValidIndexesBoard(board,getValidIndexes(board));
+        updateValidIndexesBoard(board,getValidIndexes(board, cellTypePlayer));
     }
 
     // Hoeft maar 1 keer gecalld te worden
@@ -129,7 +130,7 @@ public class Othello extends Game {
         }
     }
 
-    private ArrayList<Integer> getValidIndexes(Cell[] board) {
+    private ArrayList<Integer> getValidIndexes(Cell[] board, Cell playerCell) {
         ArrayList<Integer> validIndexes = new ArrayList<>();
         for (ArrayList<Integer> row : rows) { // Elke rij
             int startIndex = -1;
@@ -138,22 +139,22 @@ public class Othello extends Game {
                 Cell cellType = board[currentIndex];
                 if (cellType == Cell.EMPTY || cellType == Cell.EMPTY_VALID) {
                     if (startIndex == -2) { // Als er cellen zijn geweest van de player en daarna tegenstander cellen (player->tegenstander->currentIndex)
-                        if (!validIndexes.contains(startIndex))
+                        if (!validIndexes.contains(currentIndex))
                             validIndexes.add(currentIndex);
                     }
                     startIndex = currentIndex;
                     c = false;
-                } else if (cellType == cellTypeOpponent) {
-                    if (startIndex > -1)
-                        c = true;
-                    else if (startIndex < -1)
-                        startIndex = -2;
-                } else if (cellType == cellTypePlayer) {
+                } else if (cellType == playerCell) {
                     if (c && startIndex > -1) { // Als er cellen zijn geweest van de tegenstander en daarna de player cell (startIndex->tegenstander->player)
                         if (!validIndexes.contains(startIndex))
                             validIndexes.add(startIndex);
                     }
                     startIndex = -3;
+                } else {
+                    if (startIndex > -1)
+                        c = true;
+                    else if (startIndex < -1)
+                        startIndex = -2;
                 }
             }
         }
@@ -173,62 +174,80 @@ public class Othello extends Game {
 
     @Override
     public boolean AIMove() {
-        ArrayList<Integer> validIndexes = getValidIndexes(board);
+        int index = findBestMove();
+        System.out.println("Move: " + index);
+        super.move(index);
+        playerScore++;
+        updateBoard(board, true, index);
+        updateValidIndexesBoard(board, getValidIndexes(board, cellTypePlayer));
+        return true;
+    }
+
+    // Voorbeeld: https://pastebin.com/LVnpfh5G
+    private int findBestMove() {
         Cell[] currentboard;
         int searchdepth = 4;
-        int best= Integer.MIN_VALUE;
+        int best = Integer.MIN_VALUE;
         int bestMove = -1;
         int currentbest;
-        for (int index : validIndexes) {
+        System.out.println("---- CALCULATING SCORES (" + searchdepth + ") ---");
+        for (int index : getValidIndexes(board, cellTypePlayer)) {
             currentboard = board.clone();
             currentboard[index] = cellTypePlayer;
             updateBoard(currentboard, false, index);
-            currentbest = findbest(currentboard, getValidIndexes(currentboard), searchdepth, cellTypePlayer);
-            if (currentbest >= best || best== Integer.MIN_VALUE) {
+            currentbest = findBestScore(currentboard, searchdepth, false);
+            System.out.println("Score index " + index + ": " + currentbest);
+            if (currentbest == Integer.MAX_VALUE) {
+                bestMove = index;
+                System.out.println("Move gevonden waarbij de tegenstander geen move meer kan doen");
+                break; // Beste move voor de tegenstader is geen move, dus sws beste move om te doen
+            }
+            if (currentbest >= best) {
                 best = currentbest;
                 bestMove = index;
             }
         }
-        super.move(bestMove);
-        playerScore++;
-        updateBoard(board, true, bestMove);
-        updateValidIndexesBoard(board, getValidIndexes(board));
-        return true;
+        System.out.println("---- FINISHED ---");
+//        try {
+//            Thread.sleep(2000);
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
+        return bestMove;
     }
 
-    public int findbest(Cell[] board, ArrayList<Integer> validIndexes, int searchdepth, Cell currenntturn) {
-        int resultaat = Integer.MIN_VALUE;
-        if (searchdepth == 0) {
-            return countscore(board);
-        } else {
-            searchdepth--;
-            Cell[] currentboard;
-            // TODO: Rekening houden met dat ie soms achter elkaar aan de beurt is
-            if (currenntturn == cellTypePlayer)
-                currenntturn = cellTypeOpponent;
-            else
-                currenntturn = cellTypePlayer;
-            for (int index : validIndexes) {
-//                System.out.println("Current valid index in board depth " + searchdepth + ": " + index);
-                currentboard = board.clone();
-                currentboard[index] = currenntturn;
-                updateBoard(currentboard, false, index);
-                int currenentresult = findbest(currentboard, getValidIndexes(currentboard), searchdepth, currenntturn);
-                if (currenntturn == cellTypePlayer) {
-                    if (currenentresult > resultaat || resultaat ==Integer.MIN_VALUE) {
-                        resultaat = currenentresult;
-                    }
-                } else {
-                    if (currenentresult < resultaat|| resultaat ==Integer.MIN_VALUE) {
-                        resultaat = currenentresult;
-                    }
+    private int findBestScore(Cell[] board, int searchdepth, boolean playerTurn) {
+        if (searchdepth == 0)
+            return countAIScore(board);
+        searchdepth--;
+
+        Cell cell = playerTurn ? cellTypePlayer : cellTypeOpponent;
+        int result = playerTurn ? Integer.MIN_VALUE : Integer.MAX_VALUE;
+
+        Cell[] currentboard;
+        for (int index : getValidIndexes(board, cell)) {
+            currentboard = board.clone();
+            currentboard[index] = cell;
+            updateBoard(currentboard, false, index);
+            int currenentresult = findBestScore(currentboard, searchdepth, !playerTurn);
+            if (playerTurn) {
+                if (currenentresult > result) {
+                    result = currenentresult;
+                    if (result == Integer.MAX_VALUE)
+                        break; // Beste move voor de tegenstader is geen move, dus sws beste move om te doen
+                }
+            } else {
+                if (currenentresult < result) {
+                    result = currenentresult;
+                    if (result == Integer.MIN_VALUE)
+                        break; // Beste move voor de player is geen move, dus sws beste move om te doen
                 }
             }
         }
-        return resultaat;
+        return result;
     }
 
-    private int countscore(Cell[] currentboard) {
+    private int countAIScore(Cell[] currentboard) {
         int score = 0;
         for (int i = 0; i < 64; i++) {
             if (currentboard[i] == cellTypePlayer) {
