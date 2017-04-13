@@ -194,7 +194,7 @@ public class Othello extends Game {
         ArrayList<Integer> validIndexes = getValidIndexes(board, cellTypePlayer);
         List<Callable<Object>> todo = new ArrayList<>(validIndexes.size());
         Cell[] currentboard;
-        int searchdepth = 6;
+        int searchdepth = 5;
         System.out.println("---- CALCULATING SCORES (depth: " + searchdepth + ") ---");
         for (int index : validIndexes) {
             currentboard = board.clone();
@@ -222,11 +222,7 @@ public class Othello extends Game {
         int best = Integer.MIN_VALUE;
         int bestMove = -1;
         for (int index : validIndexes) {
-            if (AIIndexScores[index] == Integer.MAX_VALUE) {
-                bestMove = index;
-                System.out.println("Move gevonden waarbij de tegenstander geen move meer kan doen");
-                break; // Beste move voor de tegenstader is geen move, dus sws beste move om te doen
-            } else if (AIIndexScores[index] >= best) {
+            if (AIIndexScores[index] >= best) {
                 best = AIIndexScores[index];
                 bestMove = index;
             }
@@ -253,6 +249,7 @@ public class Othello extends Game {
         }
     }
 
+    //TODO: Alpha Beta
     private int findBestScore(Cell[] board, int searchdepth, boolean playerTurn) {
         if (searchdepth == 0)
             return countAIScore(board);
@@ -271,20 +268,20 @@ public class Othello extends Game {
                 if (currenentresult > result) {
                     result = currenentresult;
                     if (result == Integer.MAX_VALUE)
-                        break; // Beste move voor de tegenstader is geen move, dus sws beste move om te doen
+                        return findBestScore(currentboard, searchdepth, true); // Nog een keer aan de beurt
                 }
             } else {
                 if (currenentresult < result) {
                     result = currenentresult;
                     if (result == Integer.MIN_VALUE)
-                        break; // Beste move voor de player is geen move, dus sws beste move om te doen
+                        return findBestScore(currentboard, searchdepth, false);
                 }
             }
         }
         return result;
     }
 
-    // TODO: Optimaliseren van deze functie?
+    // TODO: Optimaliseren?
     private int countAIScore(Cell[] currentboard) {
         int score = 0;
         for (int i = 0; i < 64; i++) {
