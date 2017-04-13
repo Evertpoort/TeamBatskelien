@@ -49,6 +49,7 @@ public class Networker {
             }
         });
         try {
+            //"145.33.225.170", "127.0.0.1"
             soc = new Socket("127.0.0.1",7789);
             in = new BufferedReader(new InputStreamReader(soc.getInputStream()));
             out = new PrintWriter(soc.getOutputStream(),true);

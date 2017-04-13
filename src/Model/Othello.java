@@ -17,7 +17,7 @@ public class Othello extends Game {
             -10, -20, -3, -3, -3, -3, -20, -10,
             50, -10, 5, 3, 3, 5, -10, 50,
     };
-    private static final int timeout = 9;
+    private static final int timeout = 9000;
 
     public Othello(LinkedBlockingQueue<String> outputQueue, boolean playerTurn, Cell cellType) {
         super(outputQueue, 8, cellType, cellType == Cell.ZWART ? Cell.WIT : Cell.ZWART);
@@ -184,18 +184,23 @@ public class Othello extends Game {
     }
 
     // Voorbeeld: https://pastebin.com/LVnpfh5G
+    private long timeforcalc;
     private int findBestMove() {
         Cell[] currentboard;
-        int searchdepth = 4;
+        int searchdepth = 6;
         int best = Integer.MIN_VALUE;
         int bestMove = -1;
         int currentbest;
         System.out.println("---- CALCULATING SCORES (" + searchdepth + ") ---");
+        long starttime;
+        timeforcalc= timeout/getValidIndexes(board,cellTypePlayer).size();
         for (int index : getValidIndexes(board, cellTypePlayer)) {
+            starttime=System.currentTimeMillis();
             currentboard = board.clone();
             currentboard[index] = cellTypePlayer;
             updateBoard(currentboard, false, index);
-            currentbest = findBestScore(currentboard, searchdepth, false);
+
+            currentbest = findBestScore(currentboard, searchdepth, Integer.MIN_VALUE,Integer.MAX_VALUE, false,starttime);
             System.out.println("Score index " + index + ": " + currentbest);
             if (currentbest == Integer.MAX_VALUE) {
                 bestMove = index;
@@ -216,25 +221,32 @@ public class Othello extends Game {
         return bestMove;
     }
 
-    private int findBestScore(Cell[] board, int searchdepth, boolean playerTurn) {
+    private int findBestScore(Cell[] board, int searchdepth, int alpha, int beta, boolean playerTurn,long starttime) {
         if (searchdepth == 0)
             return countAIScore(board);
+//      if ((starttime+timeforcalc)>=System.currentTimeMillis()){
+//          System.out.println("I quit, the current searchdepth==" +searchdepth + " and i used time "+ timeforcalc+starttime + " > " + System.currentTimeMillis());
+//          System.out.println("I have to following time for my calc " + timeforcalc + " start time was " + starttime);
+//          return countAIScore(board);
+//        }
         searchdepth--;
 
         Cell cell = playerTurn ? cellTypePlayer : cellTypeOpponent;
         int result = playerTurn ? Integer.MIN_VALUE : Integer.MAX_VALUE;
-
         Cell[] currentboard;
         for (int index : getValidIndexes(board, cell)) {
             currentboard = board.clone();
             currentboard[index] = cell;
             updateBoard(currentboard, false, index);
-            int currenentresult = findBestScore(currentboard, searchdepth, !playerTurn);
+            int currenentresult = findBestScore(currentboard, searchdepth,alpha,beta, !playerTurn,starttime);
             if (playerTurn) {
                 if (currenentresult > result) {
                     result = currenentresult;
                     if (result == Integer.MAX_VALUE)
                         break; // Beste move voor de tegenstader is geen move, dus sws beste move om te doen
+                }
+                if (result>alpha){
+                    alpha=result;
                 }
             } else {
                 if (currenentresult < result) {
@@ -242,6 +254,12 @@ public class Othello extends Game {
                     if (result == Integer.MIN_VALUE)
                         break; // Beste move voor de player is geen move, dus sws beste move om te doen
                 }
+                if (result<beta){
+                    beta=result;
+                }
+            }
+            if (alpha>=beta){
+                break;
             }
         }
         return result;
