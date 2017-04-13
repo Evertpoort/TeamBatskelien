@@ -8,14 +8,14 @@ import java.util.concurrent.ThreadPoolExecutor;
 public class Othello extends Game {
     private final ArrayList<Integer>[] rows;
     private static final int[] valuetable = {
-            50, -10, 5, 3, 3, 5, -10, 50,
+            99, -10, 5, 3, 3, 5, -10, 9,
             -10, -20, -3, -3, -3, -3, -20, -10,
             5, -3, 1, 1, 1, 1, -3, 5,
             3, -3, 1, 0, 0, 1, -3, 3,
             3, -3, 1, 0, 0, 1, -3, 3,
             5, -3, 1, 1, 1, 1, -3, 5,
             -10, -20, -3, -3, -3, -3, -20, -10,
-            50, -10, 5, 3, 3, 5, -10, 50,
+            99, -10, 5, 3, 3, 5, -10, 99,
     };
     private static final int timeout = 9000;
 
@@ -35,7 +35,7 @@ public class Othello extends Game {
             board[28] = cellTypeOpponent;
             board[35] = cellTypeOpponent;
         }
-        updateValidIndexesBoard(board,getValidIndexes(board, cellTypePlayer));
+        updateValidIndexes(board,getValidIndexes(board, cellTypePlayer));
     }
 
     @Override
@@ -52,7 +52,18 @@ public class Othello extends Game {
         super.move(index);
         playerScore++;
         updateBoard(board, true, index);
-        updateValidIndexesBoard(board,getValidIndexes(board, cellTypePlayer));
+        updateValidIndexes(board,getValidIndexes(board, cellTypePlayer));
+        return true;
+    }
+
+    @Override
+    public boolean AIMove() {
+        int index = findBestMove();
+        System.out.println("Move: " + index);
+        super.move(index);
+        playerScore++;
+        updateBoard(board, true, index);
+        updateValidIndexes(board, getValidIndexes(board, cellTypePlayer));
         return true;
     }
 
@@ -61,7 +72,7 @@ public class Othello extends Game {
         super.opponentMove(index);
         opponentScore++;
         updateBoard(board, true, index);
-        updateValidIndexesBoard(board,getValidIndexes(board, cellTypePlayer));
+        updateValidIndexes(board,getValidIndexes(board, cellTypePlayer));
     }
 
     // Hoeft maar 1 keer gecalld te worden
@@ -162,7 +173,7 @@ public class Othello extends Game {
     }
 
     // Hoeft alleen uitgevoerd te worden wanneer de GUI geupdate moet worden
-    private void updateValidIndexesBoard(Cell[] board, ArrayList<Integer> validIndexes) {
+    private void updateValidIndexes(Cell[] board, ArrayList<Integer> validIndexes) {
         for (int i = 0; i < 64; i++) {
             if (validIndexes.contains(i)) {
                 if (board[i] == Cell.EMPTY)
@@ -172,19 +183,9 @@ public class Othello extends Game {
         }
     }
 
-    @Override
-    public boolean AIMove() {
-        int index = findBestMove();
-        System.out.println("Move: " + index);
-        super.move(index);
-        playerScore++;
-        updateBoard(board, true, index);
-        updateValidIndexesBoard(board, getValidIndexes(board, cellTypePlayer));
-        return true;
-    }
-
+    // TODO: Multithreaded
+    // TODO: Zo lang mogelijk doorgaan (timeout) dmv updaten index scores
     // Voorbeeld: https://pastebin.com/LVnpfh5G
-    private long timeforcalc;
     private int findBestMove() {
         Cell[] currentboard;
         int searchdepth = 6;
@@ -192,15 +193,11 @@ public class Othello extends Game {
         int bestMove = -1;
         int currentbest;
         System.out.println("---- CALCULATING SCORES (" + searchdepth + ") ---");
-        long starttime;
-        timeforcalc= timeout/getValidIndexes(board,cellTypePlayer).size();
         for (int index : getValidIndexes(board, cellTypePlayer)) {
-            starttime=System.currentTimeMillis();
             currentboard = board.clone();
             currentboard[index] = cellTypePlayer;
             updateBoard(currentboard, false, index);
-
-            currentbest = findBestScore(currentboard, searchdepth, Integer.MIN_VALUE,Integer.MAX_VALUE, false,starttime);
+            currentbest = findBestScore(currentboard, searchdepth, Integer.MIN_VALUE,Integer.MAX_VALUE, false);
             System.out.println("Score index " + index + ": " + currentbest);
             if (currentbest == Integer.MAX_VALUE) {
                 bestMove = index;
@@ -213,22 +210,12 @@ public class Othello extends Game {
             }
         }
         System.out.println("---- FINISHED ---");
-//        try {
-//            Thread.sleep(2000);
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        }
         return bestMove;
     }
 
-    private int findBestScore(Cell[] board, int searchdepth, int alpha, int beta, boolean playerTurn,long starttime) {
+    private int findBestScore(Cell[] board, int searchdepth, int alpha, int beta, boolean playerTurn) {
         if (searchdepth == 0)
             return countAIScore(board);
-//      if ((starttime+timeforcalc)>=System.currentTimeMillis()){
-//          System.out.println("I quit, the current searchdepth==" +searchdepth + " and i used time "+ timeforcalc+starttime + " > " + System.currentTimeMillis());
-//          System.out.println("I have to following time for my calc " + timeforcalc + " start time was " + starttime);
-//          return countAIScore(board);
-//        }
         searchdepth--;
 
         Cell cell = playerTurn ? cellTypePlayer : cellTypeOpponent;
@@ -238,7 +225,7 @@ public class Othello extends Game {
             currentboard = board.clone();
             currentboard[index] = cell;
             updateBoard(currentboard, false, index);
-            int currenentresult = findBestScore(currentboard, searchdepth,alpha,beta, !playerTurn,starttime);
+            int currenentresult = findBestScore(currentboard, searchdepth, alpha, beta, !playerTurn);
             if (playerTurn) {
                 if (currenentresult > result) {
                     result = currenentresult;
@@ -265,6 +252,7 @@ public class Othello extends Game {
         return result;
     }
 
+    // TODO: Optimaliseren van deze functie?
     private int countAIScore(Cell[] currentboard) {
         int score = 0;
         for (int i = 0; i < 64; i++) {
