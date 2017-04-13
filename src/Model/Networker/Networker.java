@@ -17,44 +17,27 @@ import java.util.concurrent.LinkedBlockingQueue;
 //sourec  http://cs.lmu.edu/~ray/notes/javanetexamples/
 
 public class Networker {
-   private  Socket soc;
-   private BufferedReader in;
-   private PrintWriter out;
-   private LinkedBlockingQueue<String> queue;
-   private LinkedBlockingQueue<String> queue2;
-    JFrame frame = new JFrame("Chatter");
-    JTextField textField = new JTextField(40);
-    JTextArea messageArea = new JTextArea(20, 40);
-    JScrollPane jscroll= new JScrollPane(messageArea);
+    private  Socket soc;
+    private BufferedReader in;
+    private PrintWriter out;
+    private LinkedBlockingQueue<String> queue;
+    private LinkedBlockingQueue<String> queue2;
 
     public Networker(LinkedBlockingQueue<String> queue,LinkedBlockingQueue queue2){
-    this.queue= queue;
-    this.queue2 = queue2;
-    start();
+        this.queue= queue;
+        this.queue2 = queue2;
+        start();
     }
 
-
     public void start() {
-
-        frame.getContentPane().add(textField,"North");
-        frame.getContentPane().add(jscroll,"Center");
-        frame.pack();
-        frame.setVisible(true);
-
-        textField.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                queue.offer(textField.getText());
-                textField.setText("");
-            }
-        });
         try {
+            //"145.33.225.170", "127.0.0.1"
             soc = new Socket("127.0.0.1",7789);
             in = new BufferedReader(new InputStreamReader(soc.getInputStream()));
             out = new PrintWriter(soc.getOutputStream(),true);
-            Thread t1= new Thread(new Input(in,messageArea,queue2));
+            Thread t1= new Thread(new Input(in,queue2));
             t1.start();
-            Thread t2= new Thread(new Output(out,queue,messageArea));
+            Thread t2= new Thread(new Output(out,queue));
             t2.start();
         } catch (IOException  e ) {
             e.printStackTrace();

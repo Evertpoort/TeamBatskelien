@@ -9,12 +9,10 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 public class Input implements Runnable  {
     BufferedReader in;
-    JTextArea messageArea;
     LinkedBlockingQueue<String> queue2;
-    public Input(BufferedReader in, JTextArea messageArea, LinkedBlockingQueue<String> queue2){
-    this.in = in;
-    this.messageArea=messageArea;
-    this.queue2=queue2;
+    public Input(BufferedReader in, LinkedBlockingQueue<String> queue2){
+        this.in = in;
+        this.queue2=queue2;
     }
     @Override
     public void run() {
@@ -25,10 +23,13 @@ public class Input implements Runnable  {
                     if (line.startsWith("SVR")||line.startsWith("ERR")){
                         queue2.offer(line);
                     }
-                    messageArea.append(line);
-                    messageArea.append("\n");
-                    messageArea.setCaretPosition(messageArea.getDocument().getLength());
-
+                }
+                else {
+                    try {
+                        Thread.sleep(100);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                 }
             } catch (IOException e) {
                 e.printStackTrace();
