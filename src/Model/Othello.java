@@ -1,10 +1,13 @@
 package Model;
 
 import java.util.ArrayList;
-import java.util.concurrent.LinkedBlockingQueue;
+import java.util.Arrays;
+import java.util.List;
+import java.util.concurrent.*;
 
 public class Othello extends Game {
     private final ArrayList<Integer>[] rows;
+    private static final ExecutorService processingPool = Executors.newFixedThreadPool(8);
     private static final int[] valuetable = {
             99, -10, 5, 3, 3, 5, -10, 99,
             -10, -20, -3, -3, -3, -3, -20, -10,
@@ -181,34 +184,73 @@ public class Othello extends Game {
         }
     }
 
-    // TODO: Multithreaded
     // TODO: Zo lang mogelijk doorgaan (timeout) dmv updaten index scores
     // Voorbeeld: https://pastebin.com/LVnpfh5G
+    private int[] AIIndexScores = new int[64];
     private int findBestMove() {
+        if (playerScore == 2 && opponentScore == 2)
+            return 19; // Allereerste move maakt niet uit
+//        Arrays.fill(AIIndexScores, Integer.MIN_VALUE);
+        ArrayList<Integer> validIndexes = getValidIndexes(board, cellTypePlayer);
+        List<Callable<Object>> todo = new ArrayList<>(validIndexes.size());
         Cell[] currentboard;
-        int searchdepth = 5;
-        int best = Integer.MIN_VALUE;
-        int bestMove = -1;
-        int currentbest;
-        System.out.println("---- CALCULATING SCORES (" + searchdepth + ") ---");
-        for (int index : getValidIndexes(board, cellTypePlayer)) {
+        int searchdepth = 6;
+        System.out.println("---- CALCULATING SCORES (depth: " + searchdepth + ") ---");
+        for (int index : validIndexes) {
             currentboard = board.clone();
             currentboard[index] = cellTypePlayer;
             updateBoard(currentboard, false, index);
-            currentbest = findBestScore(currentboard, searchdepth, false);
-            System.out.println("Score index " + index + ": " + currentbest);
-            if (currentbest == Integer.MAX_VALUE) {
+            todo.add(Executors.callable(new BestScorePlayerIndexJob(index, currentboard, searchdepth)));
+        }
+        try {
+            processingPool.invokeAll(todo);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+//        int wait = timeout;
+//        while (wait > 0) {
+//            wait--;
+//            try {
+//                Thread.sleep(1000);
+//            } catch (InterruptedException e) {
+//                e.printStackTrace();
+//            }
+//        }
+
+
+
+        int best = Integer.MIN_VALUE;
+        int bestMove = -1;
+        for (int index : validIndexes) {
+            if (AIIndexScores[index] == Integer.MAX_VALUE) {
                 bestMove = index;
                 System.out.println("Move gevonden waarbij de tegenstander geen move meer kan doen");
                 break; // Beste move voor de tegenstader is geen move, dus sws beste move om te doen
-            }
-            if (currentbest >= best) {
-                best = currentbest;
+            } else if (AIIndexScores[index] >= best) {
+                best = AIIndexScores[index];
                 bestMove = index;
             }
         }
         System.out.println("---- FINISHED ---");
         return bestMove;
+    }
+
+    private class BestScorePlayerIndexJob implements Runnable {
+        private int index;
+        private Cell[] currentboard;
+        private int searchdepth;
+        BestScorePlayerIndexJob(int index, Cell[] currentboard, int searchdepth) {
+            this.index = index;
+            this.currentboard = currentboard;
+            this.searchdepth = searchdepth;
+        }
+
+        @Override
+        public void run() {
+            int score = findBestScore(currentboard, searchdepth, false);
+            AIIndexScores[index] = score;
+            System.out.println("Score index " + index + ": " + score);
+        }
     }
 
     private int findBestScore(Cell[] board, int searchdepth, boolean playerTurn) {
