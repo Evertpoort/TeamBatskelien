@@ -43,7 +43,7 @@
             </Label>
          </children>
       </GridPane>
-      <Label text="W: 0 L: 0" GridPane.columnIndex="1" GridPane.halignment="RIGHT">
+      <Label fx:id="winloselabel" text="W: 0 L: 0 D: 0" GridPane.columnIndex="1" GridPane.halignment="RIGHT">
          <GridPane.margin>
             <Insets right="5.0" />
          </GridPane.margin>

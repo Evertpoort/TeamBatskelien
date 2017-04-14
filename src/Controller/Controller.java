@@ -47,7 +47,7 @@ public class Controller {
     @FXML
     private TableColumn<Table,String> onlinecolumn;
     @FXML
-    private Label turnLabel, score1,score2;
+    private Label turnLabel, score1,score2,winloselabel;
     @FXML
     private javafx.scene.canvas.Canvas canvas;
     @FXML
@@ -60,6 +60,9 @@ public class Controller {
     private Cell cellType;
     public PopupController popcontr;
     public String prefferedtype= "Kruisje/Zwart";
+    private int wins=0;
+    private int loses=0;
+    private int draws=0;
 
     public Controller(View view,Model model){
         this.view= view;
@@ -68,8 +71,7 @@ public class Controller {
         queue1= model.returnInputinstance();
         Thread t1= new Thread(new InputHandler(this,model,view,queue1));
         t1.start();
-        popcontr=new PopupController(this,view,queue);
-    }
+        popcontr=new PopupController(this,view,queue);}
 
     public String getPlayerName() {
         return playerName;
@@ -83,10 +85,7 @@ public class Controller {
         this.cellType= cellType;
     }
 
-
-    public boolean getAI() {
-        return AI;
-    }
+    public boolean getAI() {return AI;}
 
     public void setAI(boolean AI) {
         this.AI = AI;
@@ -175,6 +174,7 @@ public class Controller {
     public void loadgame(){
         Platform.runLater(() -> {
             view.screenController.active("GameScreen");
+            winloselabel.setText("W: "+wins +" L: "+loses +  " D: "+draws);
             gamebutton.setText("Give up");
             canvas.setOnMouseClicked(new EventHandler<MouseEvent>() {
                 @Override
@@ -200,6 +200,15 @@ public class Controller {
     }
 
     public void displaystatus(String str){
+        if (str.contains("Win")){
+            wins=+1;
+        }
+        else if (str.contains("Lose")){
+            loses=+1;
+        }
+        else {
+            draws=+1;
+        }
         view.drawstatus(str,canvas);
         Platform.runLater(() -> {
             gamebutton.setText("Close");
