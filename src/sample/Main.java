@@ -11,6 +11,7 @@ import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
+// TODO: server ip, jar file
 public class Main extends Application {
     Stage stage;
     View view;

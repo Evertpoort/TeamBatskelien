@@ -103,7 +103,7 @@ public class View {
             gc.setFill(Color.ALICEBLUE);
         gc.strokeRect(xpos*offsetx,ypos*offsety,offsetx,offsety);
         gc.fillRect(xpos*offsetx,ypos*offsety,offsetx,offsety);
-        gc.setEffect(null);
+//        gc.setEffect(null);
 
 
 

@@ -7,18 +7,20 @@ import java.util.concurrent.*;
 
 public class Othello extends Game {
     private final ArrayList<Integer>[] rows;
-    private static final ExecutorService processingPool = Executors.newFixedThreadPool(8);
-    private static final int[] valuetable = {
-            3, 1, 2, 2, 2, 2, 1, 3,
-            1, 1, 1, 1, 1, 1, 1, 1,
-            2, 1, 2, 1, 1, 2, 1, 2,
-            2, 1, 1, 2, 2, 1, 1, 2,
-            2, 1, 1, 2, 2, 1, 1, 2,
-            2, 1, 2, 1, 1, 2, 1, 2,
-            1, 1, 1, 1, 1, 1, 1, 1,
-            3, 1, 2, 2, 2, 2, 1, 3,
+    private static final ExecutorService processingPool = Executors.newCachedThreadPool();
+    private static final int[] VALUE_TABLE = {
+        10000, -3000, 1000,  800,  800, 1000, -3000, 10000,
+        -3000, -5000, -450, -500, -500, -450, -5000, -3000,
+         1000,  -450,   30,   10,   10,   30,  -450,  1000,
+          800,  -500,   10,   50,   50,   10,  -500,   800,
+          800,  -500,   10,   50,   50,   10,  -500,   800,
+         1000,  -450,   30,   10,   10,   30,  -450,  1000,
+        -3000, -5000, -450, -500, -500, -450, -5000, -3000,
+        10000, -3000, 1000,  800,  800, 1000, -3000, 10000,
     };
-    private static final int timeout = 9;
+    private static final int SERVER_TIMEOUT = 10;
+    private static final int MINIMAL_DEPTH = 7;
+    private static final int TIMEOUT_DEPTH = 5; // Als er nog maar 1 seconde over is, gebruik deze diepte
 
     public Othello(LinkedBlockingQueue<String> outputQueue, boolean playerTurn, Cell cellType) {
         super(outputQueue, 8, cellType, cellType == Cell.ZWART ? Cell.WIT : Cell.ZWART);
@@ -184,40 +186,47 @@ public class Othello extends Game {
         }
     }
 
-    // TODO: Zo lang mogelijk doorgaan (timeout) dmv updaten index scores
-    // Voorbeeld: https://pastebin.com/LVnpfh5G
+    // Minimax
     private int[] AIIndexScores = new int[64];
+    private int currentsearchdepth = MINIMAL_DEPTH + 1;
     private int findBestMove() {
-//        if (playerScore == 2 && opponentScore == 2)
-//            return 19; // Allereerste move maakt niet uit
-//        Arrays.fill(AIIndexScores, Integer.MIN_VALUE);
+        if (playerScore == 2 && opponentScore == 2)
+            return 19; // Allereerste move maakt niet uit
+        Arrays.fill(AIIndexScores, Integer.MIN_VALUE+1);
         ArrayList<Integer> validIndexes = getValidIndexes(board, cellTypePlayer);
-        List<Callable<Object>> todo = new ArrayList<>(validIndexes.size());
-        Cell[] currentboard;
-        int searchdepth = 6;
-        System.out.println("---- CALCULATING SCORES (depth: " + searchdepth + ") ---");
+        List<Callable<Object>> todo = new ArrayList<>();
+        System.out.println("---- CALCULATING SCORES ---");
         for (int index : validIndexes) {
-            currentboard = board.clone();
-            currentboard[index] = cellTypePlayer;
-            updateBoard(currentboard, false, index);
-            todo.add(Executors.callable(new BestScorePlayerIndexJob(index, currentboard, searchdepth,Integer.MIN_VALUE,Integer.MAX_VALUE)));
+            todo.add(Executors.callable(new BestScorePlayerIndexJob(index)));
         }
         try {
-            processingPool.invokeAll(todo);
-        } catch (InterruptedException e) {
+            boolean failed = false;
+            for (Future<Object> f : processingPool.invokeAll(todo, SERVER_TIMEOUT - 1, TimeUnit.SECONDS)) {
+                if (f.isCancelled()) {
+                    failed = true;
+                }
+            }
+            if (failed) {
+                while (true) { // Wachten op de scores van de depth waar de indexes zich momenteel nog bevinden
+                    boolean scores = true;
+                    for (int i : validIndexes) {
+                        if (AIIndexScores[i] == Integer.MIN_VALUE+1) {
+                            scores = false;
+                            break;
+                        }
+                    }
+                    if (scores)
+                        break;
+                }
+                currentsearchdepth -= 2;
+                if (currentsearchdepth < MINIMAL_DEPTH)
+                    currentsearchdepth = MINIMAL_DEPTH;
+            } else {
+                    currentsearchdepth++;
+            }
+        } catch (InterruptedException | CancellationException e) {
             e.printStackTrace();
         }
-//        int wait = timeout;
-//        while (wait > 0) {
-//            wait--;
-//            try {
-//                Thread.sleep(1000);
-//            } catch (InterruptedException e) {
-//                e.printStackTrace();
-//            }
-//        }
-
-
 
         int best = Integer.MIN_VALUE;
         int bestMove = -1;
@@ -233,31 +242,25 @@ public class Othello extends Game {
 
     private class BestScorePlayerIndexJob implements Runnable {
         private int index;
-        private Cell[] currentboard;
-        private int searchdepth;
-        private int alpha;
-        private int beta;
-        BestScorePlayerIndexJob(int index, Cell[] currentboard, int searchdepth, int alpha, int beta) {
+        BestScorePlayerIndexJob(int index) {
             this.index = index;
-            this.currentboard = currentboard;
-            this.searchdepth = searchdepth;
-            this.alpha=alpha;
-            this.beta=beta;
         }
 
         @Override
         public void run() {
-            int score = findBestScore(currentboard, searchdepth, false,alpha,beta);
+            Cell[] currentboard = board.clone();
+            currentboard[index] = cellTypePlayer;
+            updateBoard(currentboard, false, index);
+            int score = findBestScore(currentboard, 0, false, Integer.MIN_VALUE, Integer.MAX_VALUE);
+            System.out.println("Score index " + index + ": " + score + " (depth: " + (Thread.currentThread().isInterrupted() ?  "<" : "") + currentsearchdepth + ")");
             AIIndexScores[index] = score;
-            System.out.println("Score index " + index + ": " + score);
         }
     }
 
-    //TODO: Alpha Beta
-    private int findBestScore(Cell[] board, int searchdepth, boolean playerTurn, int alpha, int beta) {
-        if (searchdepth == 0)
+    private int findBestScore(Cell[] board, int depth, boolean playerTurn, int alpha, int beta) {
+        if (depth == currentsearchdepth || (Thread.currentThread().isInterrupted() && depth >= TIMEOUT_DEPTH))
             return countAIScore(board);
-        searchdepth--;
+        depth++;
 
         Cell cell = playerTurn ? cellTypePlayer : cellTypeOpponent;
         int result = playerTurn ? Integer.MIN_VALUE : Integer.MAX_VALUE;
@@ -267,12 +270,12 @@ public class Othello extends Game {
             currentboard = board.clone();
             currentboard[index] = cell;
             updateBoard(currentboard, false, index);
-            int currenentresult = findBestScore(currentboard, searchdepth, !playerTurn, alpha, beta);
+            int currenentresult = findBestScore(currentboard, depth, !playerTurn, alpha, beta);
             if (playerTurn) {
                 if (currenentresult > result) {
                     result = currenentresult;
                     if (result == Integer.MAX_VALUE)
-                        return findBestScore(currentboard, searchdepth, true,alpha ,beta); // Nog een keer aan de beurt
+                        return findBestScore(currentboard, depth, true,alpha ,beta); // Nog een keer aan de beurt
                     alpha = Math.max(alpha,result);
                 }
 
@@ -280,33 +283,28 @@ public class Othello extends Game {
                 if (currenentresult < result) {
                     result = currenentresult;
                     if (result == Integer.MIN_VALUE)
-                        return findBestScore(currentboard, searchdepth, false,alpha ,beta);
+                        return findBestScore(currentboard, depth, false,alpha ,beta);
                     beta=Math.min(beta,result);
                 }
 
             }
             if (alpha>=beta){
-                System.out.println(alpha+ ">="+  beta);
+//                System.out.println(alpha+ ">="+  beta);
                 break;
             }
         }
         return result;
     }
 
-    // TODO: Optimaliseren?
     private int countAIScore(Cell[] currentboard) {
         int score = 0;
         for (int i = 0; i < 64; i++) {
-//            if (currentboard[i] == cellTypePlayer) {
-//                score += 1;
-//            } else if (currentboard[i]==cellTypeOpponent){
-//                score -= 1;
-//            }
-            if (currentboard[i] == cellTypePlayer)
-                score += valuetable[i];
+            if (currentboard[i] == cellTypePlayer) {
+                score += VALUE_TABLE[i];
+            } else if (currentboard[i]==cellTypeOpponent){
+                score -= VALUE_TABLE[i];
+            }
         }
-
-//
         return score;
     }
 }
