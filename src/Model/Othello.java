@@ -3,12 +3,16 @@ package Model;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Properties;
 import java.util.concurrent.*;
 
 public class Othello extends Game {
     private final ArrayList<Integer>[] rows;
     private static final ExecutorService processingPool = Executors.newCachedThreadPool();
-    private static final int[] VALUE_TABLE = {
+    // Default values (adjustable in config.properties)
+    private int minimalDepth = 7;
+    private int timeoutDepth = 5;
+    private int[] valueTable = {
         10000, -3000, 1000,  800,  800, 1000, -3000, 10000,
         -3000, -5000, -450, -500, -500, -450, -5000, -3000,
          1000,  -450,   30,   10,   10,   30,  -450,  1000,
@@ -18,12 +22,10 @@ public class Othello extends Game {
         -3000, -5000, -450, -500, -500, -450, -5000, -3000,
         10000, -3000, 1000,  800,  800, 1000, -3000, 10000,
     };
-    private static final int SERVER_TIMEOUT = 10;
-    private static final int MINIMAL_DEPTH = 7;
-    private static final int TIMEOUT_DEPTH = 5; // Als er nog maar 1 seconde over is, gebruik deze diepte
 
-    public Othello(LinkedBlockingQueue<String> outputQueue, boolean playerTurn, Cell cellType) {
-        super(outputQueue, 8, cellType, cellType == Cell.ZWART ? Cell.WIT : Cell.ZWART);
+    public Othello(LinkedBlockingQueue<String> outputQueue, Properties prop, boolean playerTurn, Cell cellType) {
+        super(outputQueue, prop, 8, cellType, cellType == Cell.ZWART ? Cell.WIT : Cell.ZWART);
+        loadSettings();
         rows = getAllRows();
         playerScore = 2;
         opponentScore = 2;
@@ -39,6 +41,20 @@ public class Othello extends Game {
             board[35] = cellTypeOpponent;
         }
         updateValidIndexes(board,getValidIndexes(board, cellTypePlayer));
+    }
+
+    private void loadSettings() {
+        if (prop.getProperty("OTHELLO_MINIMAL_DEPTH") != null)
+            minimalDepth = Integer.parseInt(prop.getProperty("OTHELLO_MINIMAL_DEPTH").trim());
+        if (prop.getProperty("OTHELLO_TIMEOUT_DEPTH") != null)
+            timeoutDepth = Integer.parseInt(prop.getProperty("OTHELLO_TIMEOUT_DEPTH").trim());
+        if (prop.getProperty("OTHELLO_VALUE_TABLE") != null) {
+            String[] values = prop.getProperty("OTHELLO_VALUE_TABLE").split(",");
+            for(int i = 0; i < 64; i++) {
+                valueTable[i] = Integer.parseInt(values[i].trim());
+            }
+        }
+
     }
 
     @Override
@@ -112,7 +128,7 @@ public class Othello extends Game {
         for (ArrayList<Integer> row : rows) { // Elke rij
             int startIndex = -1;
             boolean needFlip = false;
-            for (Integer currentIndex : row) { // Controleer elke index per rij
+            for (int currentIndex : row) { // Controleer elke index per rij
                 Cell cellType = board[currentIndex];
                 if (cellType == Cell.EMPTY || cellType == Cell.EMPTY_VALID) {
                     startIndex = -1;
@@ -149,7 +165,7 @@ public class Othello extends Game {
         for (ArrayList<Integer> row : rows) { // Elke rij
             int startIndex = -1;
             boolean c = false;
-            for (Integer currentIndex : row) { // Controleer elke index per rij
+            for (int currentIndex : row) { // Controleer elke index per rij
                 Cell cellType = board[currentIndex];
                 if (cellType == Cell.EMPTY || cellType == Cell.EMPTY_VALID) {
                     if (startIndex == -2) { // Als er cellen zijn geweest van de player en daarna tegenstander cellen (player->tegenstander->currentIndex)
@@ -188,11 +204,11 @@ public class Othello extends Game {
 
     // Minimax
     private int[] AIIndexScores = new int[64];
-    private int currentsearchdepth = MINIMAL_DEPTH + 1;
+    private int currentsearchdepth = minimalDepth + 1;
     private int findBestMove() {
         if (playerScore == 2 && opponentScore == 2)
             return 19; // Allereerste move maakt niet uit
-        Arrays.fill(AIIndexScores, Integer.MIN_VALUE+1);
+        Arrays.fill(AIIndexScores, Integer.MIN_VALUE+1); // Geen value = Integer.MIN_VALUE+1
         ArrayList<Integer> validIndexes = getValidIndexes(board, cellTypePlayer);
         List<Callable<Object>> todo = new ArrayList<>();
         System.out.println("---- CALCULATING SCORES ---");
@@ -201,7 +217,7 @@ public class Othello extends Game {
         }
         try {
             boolean failed = false;
-            for (Future<Object> f : processingPool.invokeAll(todo, SERVER_TIMEOUT - 1, TimeUnit.SECONDS)) {
+            for (Future<Object> f : processingPool.invokeAll(todo, serverTimeout - 1500, TimeUnit.MILLISECONDS)) {
                 if (f.isCancelled()) {
                     failed = true;
                 }
@@ -219,8 +235,8 @@ public class Othello extends Game {
                         break;
                 }
                 currentsearchdepth -= 2;
-                if (currentsearchdepth < MINIMAL_DEPTH)
-                    currentsearchdepth = MINIMAL_DEPTH;
+                if (currentsearchdepth < minimalDepth)
+                    currentsearchdepth = minimalDepth;
             } else {
                     currentsearchdepth++;
             }
@@ -258,7 +274,7 @@ public class Othello extends Game {
     }
 
     private int findBestScore(Cell[] board, int depth, boolean playerTurn, int alpha, int beta) {
-        if (depth == currentsearchdepth || (Thread.currentThread().isInterrupted() && depth >= TIMEOUT_DEPTH))
+        if (depth == currentsearchdepth || (Thread.currentThread().isInterrupted() && depth >= timeoutDepth))
             return countAIScore(board);
         depth++;
 
@@ -284,12 +300,11 @@ public class Othello extends Game {
                     result = currenentresult;
                     if (result == Integer.MIN_VALUE)
                         return findBestScore(currentboard, depth, false,alpha ,beta);
-                    beta=Math.min(beta,result);
+                    beta = Math.min(beta,result);
                 }
 
             }
-            if (alpha>=beta){
-//                System.out.println(alpha+ ">="+  beta);
+            if (alpha >= beta) {
                 break;
             }
         }
@@ -300,9 +315,9 @@ public class Othello extends Game {
         int score = 0;
         for (int i = 0; i < 64; i++) {
             if (currentboard[i] == cellTypePlayer) {
-                score += VALUE_TABLE[i];
+                score += valueTable[i];
             } else if (currentboard[i]==cellTypeOpponent){
-                score -= VALUE_TABLE[i];
+                score -= valueTable[i];
             }
         }
         return score;

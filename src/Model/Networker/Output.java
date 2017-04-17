@@ -1,8 +1,5 @@
 package Model.Networker;
 
-import Model.Model;
-
-import javax.swing.*;
 import java.io.PrintWriter;
 import java.util.TimerTask;
 import java.util.concurrent.Executors;
@@ -12,24 +9,19 @@ import java.util.concurrent.TimeUnit;
 
 public class Output extends TimerTask implements Runnable {
     private PrintWriter out;
-    private LinkedBlockingQueue<String> queue;
-    private JTextArea messageArea;
-    public Output(PrintWriter out,LinkedBlockingQueue<String> queue){
+    private LinkedBlockingQueue<String> outputQueue;
+    public Output(PrintWriter out,LinkedBlockingQueue<String> outputQueue){
         this.out=out;
-        this.queue=queue;
+        this.outputQueue=outputQueue;
         ScheduledExecutorService executorService = Executors.newScheduledThreadPool(1);
-        executorService.scheduleAtFixedRate(new Runnable() {
-            @Override
-            public void run() {
-                updatetable();
-            }
-        }, 0, 5000, TimeUnit.MILLISECONDS);
+        executorService.scheduleAtFixedRate(this::updatetable, 0, 5000, TimeUnit.MILLISECONDS);
     }
+
     @Override
     public void run() {
         while (true) {
-            if (queue.size() > 0) {
-                makecommand(queue.remove());
+            if (outputQueue.size() > 0) {
+                makecommand(outputQueue.remove());
             }
             else {
                 try {

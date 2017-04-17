@@ -2,9 +2,6 @@ package View;
 
 import Controller.Controller;
 import Model.*;
-import javafx.application.Platform;
-import javafx.event.ActionEvent;
-import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.VPos;
 import javafx.scene.Scene;
@@ -19,25 +16,19 @@ import javafx.scene.text.FontSmoothingType;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
-
 import java.lang.Math;
-
 import java.io.IOException;
 
 public class View {
-    private Stage stage;
     public ScreenController screenController;
     public ScreenController popupscreenController;
     public BorderPane root;
     public Controller controller;
     public Model model;
-    private Cell[] list;
     private GraphicsContext gc;
     private InnerShadow is;
 
-//bu
     public View(Stage stage, Model model) {
-        this.stage = stage;
         this.root = new BorderPane();
         this.controller = new Controller(this, model);
         this.screenController = new ScreenController(stage, root);
@@ -72,7 +63,7 @@ public class View {
         loader.setController(controller.popcontr);
         try {
             popupscreenController.add(name,loader.load());
-        }catch (IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
@@ -80,13 +71,12 @@ public class View {
     public void drawcanvas(Canvas canvas, Cell[] list) {
         gc = canvas.getGraphicsContext2D();
         for (int i = 0; i < list.length; i++) {
-        draw(canvas,i,list);
+            draw(canvas,i,list);
         }
     }
 
 
     public void draw(Canvas canvas,int index, Cell[] list) {
-     //   gc.clearRect(0,0,canvas.getWidth(),canvas.getHeight());
         Cell cell = list[index];
         double divider= Math.sqrt(list.length);
         double xpos= index%divider;
@@ -96,17 +86,12 @@ public class View {
         double textheight= offsety/2;
         gc.setStroke(Color.DARKGREY);
 
-        //gc.setEffect(is);
         if (cell==Cell.EMPTY_VALID)
             gc.setFill(Color.CYAN);
         else
             gc.setFill(Color.ALICEBLUE);
         gc.strokeRect(xpos*offsetx,ypos*offsety,offsetx,offsety);
         gc.fillRect(xpos*offsetx,ypos*offsety,offsetx,offsety);
-//        gc.setEffect(null);
-
-
-
 
         if (cell==Cell.KRUISJE||cell==Cell.RONDJE){
             gc.setFill(Color.BLACK);
@@ -117,8 +102,7 @@ public class View {
             String character = "";
             if (cell==Cell.KRUISJE){
                 character="X";
-            }
-            else{
+            } else {
                 character="O";
             }
 
@@ -129,32 +113,24 @@ public class View {
             gc.strokeArc(xpos*offsetx+offsetx/2-textheight/2,ypos*offsety+offsety/2-textheight/2,textheight,textheight,0,360,ArcType.ROUND);
             if (cell==Cell.ZWART){
                 gc.setFill(Color.BLACK);
-            }
-            else{
-            gc.setFill(Color.WHITE);
+            } else {
+                gc.setFill(Color.WHITE);
             }
 
             gc.fillArc(xpos*offsetx+offsetx/2-textheight/2,ypos*offsety+offsety/2-textheight/2,textheight,textheight,0,360,ArcType.ROUND);
-
         }
-
-
     }
 
     public void drawstatus(String str,Canvas canvas){
         gc= canvas.getGraphicsContext2D();
         gc.clearRect(0,0,canvas.getWidth(),canvas.getHeight());
 
-
         double textheight = canvas.getHeight()/3;
-        // add nice back ground
         if (str.equals("Win")){
             gc.setFill(Color.rgb(153,255,153));
-        }
-        else if (str.equals("Lose")){
+        } else if (str.equals("Lose")){
             gc.setFill(Color.rgb(255,102,102));
-        }
-        else{
+        } else {
             gc.setFill(Color.ALICEBLUE);
         }
         gc.fillRect(0,0,canvas.getWidth(),canvas.getHeight());

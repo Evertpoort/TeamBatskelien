@@ -7,39 +7,30 @@ import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
-import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.scene.Scene;
-import javafx.scene.canvas.*;
-import javafx.scene.canvas.Canvas;
 import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.BorderPane;
-import javafx.stage.Stage;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class Controller {
     public View view;
     private Model model;
-    private LinkedBlockingQueue<String> queue;
-    private LinkedBlockingQueue<String> queue1;
+    private LinkedBlockingQueue<String> outputQueue;
+    private LinkedBlockingQueue<String> intputQueue;
 
     @FXML
     ComboBox<String> combobox;
     @FXML
     private RadioButton radiotype1,radiotype2;
-
     @FXML
     private ToggleGroup typegroup1;
-
     @FXML
     private TextField login;
-
     @FXML
     private CheckBox checkboxai;
     @FXML
@@ -53,8 +44,7 @@ public class Controller {
     @FXML
     private Button gamebutton;
 
-    final ObservableList<Table> data = FXCollections.observableArrayList(
-    );
+    final ObservableList<Table> data = FXCollections.observableArrayList();
     private String playerName;
     private boolean AI;
     private Cell cellType;
@@ -65,13 +55,13 @@ public class Controller {
     private int draws=0;
 
     public Controller(View view,Model model){
-        this.view= view;
-        this.model=model;
-        queue=model.returnInstance();
-        queue1= model.returnInputinstance();
-        Thread t1= new Thread(new InputHandler(this,model,view,queue1));
+        this.view = view;
+        this.model = model;
+        outputQueue = model.returnOutputInstance();
+        intputQueue= model.returnInputinstance();
+        Thread t1 = new Thread(new InputHandler(this,model,view,intputQueue));
         t1.start();
-        popcontr=new PopupController(this,view,queue);}
+        popcontr=new PopupController(this,view,outputQueue);}
 
     public String getPlayerName() {
         return playerName;
@@ -101,8 +91,8 @@ public class Controller {
         String name = login.getText();
         if (!name.equals("")) {
             playerName = name;
-            queue.offer("Login " + name);
-            queue.offer("get playerlist");
+            outputQueue.offer("Login " + name);
+            outputQueue.offer("get playerlist");
             view.screenController.active("LobbyScreen");
             onlinecolumn.setCellValueFactory(new PropertyValueFactory<Table, String>("playername"));
             usertable.setItems(data);
@@ -131,7 +121,7 @@ public class Controller {
 
     @FXML
     public void refresh(ActionEvent event){
-        queue.offer("get playerlist");
+        outputQueue.offer("get playerlist");
     }
     @FXML
     public void openchallenge(ActionEvent event){
@@ -158,7 +148,6 @@ public class Controller {
         data.clear();
         for (String i: list){
             if (!i.equals("")&&!i.equals(playerName)){
-                //System.out.println(i);
                 data.add(new Table(i));
             }
         }
@@ -166,7 +155,7 @@ public class Controller {
 
     @FXML
     public void giveupclicked(ActionEvent event){
-        if (((Button)event.getSource()).getText().equals("Give up")){queue.offer("forfeit");}
+        if (((Button)event.getSource()).getText().equals("Give up")){outputQueue.offer("forfeit");}
         view.screenController.active("LobbyScreen");
         cellType=null;
     }

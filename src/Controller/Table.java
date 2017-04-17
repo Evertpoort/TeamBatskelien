@@ -6,7 +6,7 @@ public class Table {
     private final SimpleStringProperty playername;
 
     public Table(String name){
-        this.playername= new SimpleStringProperty(name);
+        this.playername = new SimpleStringProperty(name);
     }
 
     public String getPlayername() {

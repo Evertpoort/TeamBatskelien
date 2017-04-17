@@ -1,10 +1,11 @@
 package Model;
 
+import java.util.Properties;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class TicTacToe extends Game {
-    public TicTacToe(LinkedBlockingQueue<String> outputQueue, Cell cellType){
-        super(outputQueue, 3, cellType, cellType == Cell.KRUISJE ? Cell.RONDJE : Cell.KRUISJE);
+    public TicTacToe(LinkedBlockingQueue<String> outputQueue, Properties prop, Cell cellType){
+        super(outputQueue, prop, 3, cellType, cellType == Cell.KRUISJE ? Cell.RONDJE : Cell.KRUISJE);
     }
 
     @Override

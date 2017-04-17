@@ -1,12 +1,14 @@
 package Model;
 
 import java.util.Arrays;
+import java.util.Properties;
 import java.util.concurrent.LinkedBlockingQueue;
-
 import static java.lang.Math.pow;
 
 public abstract class Game {
     LinkedBlockingQueue<String> outputQueue;
+    Properties prop;
+    int serverTimeout;
     Cell[] board;
     boolean playerTurn = false;
     Cell cellTypePlayer;
@@ -15,8 +17,10 @@ public abstract class Game {
     int playerScore = 0;
     int opponentScore = 0;
 
-    public Game(LinkedBlockingQueue<String> outPutQueue, int size, Cell cellTypePlayer, Cell cellTypeOpponent) {
+    public Game(LinkedBlockingQueue<String> outPutQueue, Properties prop, int size, Cell cellTypePlayer, Cell cellTypeOpponent) {
         this.outputQueue = outPutQueue;
+        this.prop = prop;
+        this.serverTimeout = Integer.parseInt(prop.getProperty("SERVER_TIMEOUT"));
         this.size = size;
         this.board = new Cell[(int)(pow(size, 2))];
         Arrays.fill(this.board, Cell.EMPTY);
