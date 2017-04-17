@@ -9,6 +9,7 @@ import java.util.concurrent.*;
 public class Othello extends Game {
     private final ArrayList<Integer>[] rows;
     private static final ExecutorService processingPool = Executors.newCachedThreadPool();
+    private int currentsearchdepth;
     // Default values (adjustable in config.properties)
     private int minimalDepth = 7;
     private int timeoutDepth = 5;
@@ -26,6 +27,7 @@ public class Othello extends Game {
     public Othello(LinkedBlockingQueue<String> outputQueue, Properties prop, boolean playerTurn, Cell cellType) {
         super(outputQueue, prop, 8, cellType, cellType == Cell.ZWART ? Cell.WIT : Cell.ZWART);
         loadSettings();
+        currentsearchdepth = minimalDepth + 1;
         rows = getAllRows();
         playerScore = 2;
         opponentScore = 2;
@@ -204,7 +206,6 @@ public class Othello extends Game {
 
     // Minimax
     private int[] AIIndexScores = new int[64];
-    private int currentsearchdepth = minimalDepth + 1;
     private int findBestMove() {
         if (playerScore == 2 && opponentScore == 2)
             return 19; // Allereerste move maakt niet uit
