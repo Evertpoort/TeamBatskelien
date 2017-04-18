@@ -41,37 +41,32 @@ public class View {
         is.setOffsetY(2);
         is.setColor(Color.DIMGREY);
 
-        addScene("LoginScreen", "/res/LoginScreen.fxml");
-        addScene("LobbyScreen", "/res/LobbyScreen.fxml");
-        addScene("GameScreen", "/res/GameScreen.fxml");
+        addScene(0,screenController,"LoginScreen", "/res/LoginScreen.fxml");
+        addScene(0,screenController,"LobbyScreen", "/res/LobbyScreen.fxml");
+        addScene(0,screenController,"GameScreen", "/res/GameScreen.fxml");
 
-        addPopupScene("ChallengeScreen", "/res/ChallengeScreen.fxml");
-        addPopupScene("GameInvite", "/res/GameInvite.fxml");
+        addScene(1,popupscreenController,"ChallengeScreen", "/res/ChallengeScreen.fxml");
+        addScene(1,popupscreenController,"GameInvite", "/res/GameInvite.fxml");
         stage.setScene(new Scene(root));
     }
 
-    public void addScene(String name, String path) {
-
+    public void addScene(int identifier,ScreenController scr, String name, String path) {//creates an fxml loader and adds it to the screencontroller
         FXMLLoader loader = new FXMLLoader();
-        loader.setController(controller);
+        if (identifier==0){
+            loader.setController(controller);
+        }
+        else {
+            loader.setController(controller.popcontr);
+        }
         try {
-            screenController.add(name, loader.load(getClass().getResourceAsStream(path)));
+            scr.add(name, loader.load(getClass().getResourceAsStream(path)));
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public void addPopupScene(String name, String path){
-        FXMLLoader loader = new FXMLLoader();
-        loader.setController(controller.popcontr);
-        try {
-            popupscreenController.add(name,loader.load(getClass().getResourceAsStream(path)));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 
-    public void drawcanvas(Canvas canvas, Cell[] list) {
+    public void drawcanvas(Canvas canvas, Cell[] list) { // draws for each item in the list
         gc = canvas.getGraphicsContext2D();
         for (int i = 0; i < list.length; i++) {
             draw(canvas,i,list);
@@ -89,14 +84,14 @@ public class View {
         double textheight= offsety/2;
         gc.setStroke(Color.DARKGREY);
 
-        if (cell==Cell.EMPTY_VALID)
+        if (cell==Cell.EMPTY_VALID)  // makes the valid moves a different color then the others
             gc.setFill(Color.CYAN);
         else
             gc.setFill(Color.ALICEBLUE);
         gc.strokeRect(xpos*offsetx,ypos*offsety,offsetx,offsety);
         gc.fillRect(xpos*offsetx,ypos*offsety,offsetx,offsety);
 
-        if (cell==Cell.KRUISJE||cell==Cell.RONDJE){
+        if (cell==Cell.KRUISJE||cell==Cell.RONDJE){ // fills the cells with a x or o
             gc.setFill(Color.BLACK);
             gc.setFontSmoothingType(FontSmoothingType.LCD);
             gc.setFont(Font.font("Helvetica", FontWeight.BOLD, textheight));
@@ -111,7 +106,7 @@ public class View {
 
             gc.fillText(character,xpos*offsetx+offsetx/2,ypos*offsety+offsety/2);
         }
-        else if (cell==Cell.WIT||cell==Cell.ZWART){
+        else if (cell==Cell.WIT||cell==Cell.ZWART){ // fills the cells with a black or white circle.
             gc.setFill(Color.BLACK);
             gc.strokeArc(xpos*offsetx+offsetx/2-textheight/2,ypos*offsety+offsety/2-textheight/2,textheight,textheight,0,360,ArcType.ROUND);
             if (cell==Cell.ZWART){
@@ -124,7 +119,7 @@ public class View {
         }
     }
 
-    public void drawstatus(String str,Canvas canvas){
+    public void drawstatus(String str,Canvas canvas){ //draws the current status of the game // will display win,lose or draw.
         gc= canvas.getGraphicsContext2D();
         gc.clearRect(0,0,canvas.getWidth(),canvas.getHeight());
 

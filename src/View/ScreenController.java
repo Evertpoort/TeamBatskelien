@@ -13,14 +13,13 @@ public class ScreenController {
     public ScreenController(Stage stage,BorderPane root){
         this.stage = stage;
         this.root = root;
-
     }
 
     public void add(String name, Pane pane){
         screenMap.put(name,pane);
     }
 
-    public void active(String name){
+    public void active(String name){ //make this the current active scene
         root.setCenter(screenMap.get(name));
         screenMap.get(name).autosize();
         stage.sizeToScene();
