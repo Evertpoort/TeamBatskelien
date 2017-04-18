@@ -239,7 +239,7 @@ public class Othello extends Game {
                 if (currentsearchdepth < minimalDepth)
                     currentsearchdepth = minimalDepth;
             } else {
-                    currentsearchdepth++;
+                currentsearchdepth++;
             }
         } catch (InterruptedException | CancellationException e) {
             e.printStackTrace();
@@ -291,16 +291,16 @@ public class Othello extends Game {
             if (playerTurn) {
                 if (currenentresult > result) {
                     result = currenentresult;
-                    if (result == Integer.MAX_VALUE)
-                        return findBestScore(currentboard, depth, true,alpha ,beta); // Nog een keer aan de beurt
+                    while (result == Integer.MAX_VALUE)
+                        result = findBestScore(currentboard, depth, true, alpha, beta); // Nog een keer aan de beurt
                     alpha = Math.max(alpha,result);
                 }
 
             } else {
                 if (currenentresult < result) {
                     result = currenentresult;
-                    if (result == Integer.MIN_VALUE)
-                        return findBestScore(currentboard, depth, false,alpha ,beta);
+                    while (result == Integer.MIN_VALUE)
+                        result = findBestScore(currentboard, depth, false, alpha, beta);
                     beta = Math.min(beta,result);
                 }
 
