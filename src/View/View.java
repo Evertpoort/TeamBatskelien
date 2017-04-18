@@ -16,6 +16,8 @@ import javafx.scene.text.FontSmoothingType;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
+
+import java.io.InputStream;
 import java.lang.Math;
 import java.io.IOException;
 
@@ -39,30 +41,31 @@ public class View {
         is.setOffsetY(2);
         is.setColor(Color.DIMGREY);
 
-        addScene("LoginScreen", "../res/LoginScreen.fxml");
-        addScene("LobbyScreen", "../res/LobbyScreen.fxml");
-        addScene("GameScreen", "../res/GameScreen.fxml");
+        addScene("LoginScreen", "/res/LoginScreen.fxml");
+        addScene("LobbyScreen", "/res/LobbyScreen.fxml");
+        addScene("GameScreen", "/res/GameScreen.fxml");
 
-        addPopupScene("ChallengeScreen", "../res/ChallengeScreen.fxml");
-        addPopupScene("GameInvite", "../res/GameInvite.fxml");
+        addPopupScene("ChallengeScreen", "/res/ChallengeScreen.fxml");
+        addPopupScene("GameInvite", "/res/GameInvite.fxml");
         stage.setScene(new Scene(root));
     }
 
     public void addScene(String name, String path) {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource(path));
+
+        FXMLLoader loader = new FXMLLoader();
         loader.setController(controller);
         try {
-            screenController.add(name, loader.load());
+            screenController.add(name, loader.load(getClass().getResourceAsStream(path)));
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     public void addPopupScene(String name, String path){
-        FXMLLoader loader = new FXMLLoader(getClass().getResource(path));
+        FXMLLoader loader = new FXMLLoader();
         loader.setController(controller.popcontr);
         try {
-            popupscreenController.add(name,loader.load());
+            popupscreenController.add(name,loader.load(getClass().getResourceAsStream(path)));
         } catch (IOException e) {
             e.printStackTrace();
         }

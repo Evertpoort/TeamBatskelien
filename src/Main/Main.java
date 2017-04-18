@@ -1,4 +1,4 @@
-package sample;
+package Main;
 
 import Model.Model;
 import View.View;

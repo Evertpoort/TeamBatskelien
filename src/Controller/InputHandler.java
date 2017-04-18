@@ -24,7 +24,7 @@ public class InputHandler implements Runnable {
         while (true){
             try {
                 String command=inputQueue.take();
-                ArrayList<String> args = parseArgs(command);
+                ArrayList<String> args = parseArgs(command); // creates an arraylist for when the string contain ""
                 if (command.contains("YOURTURN")) {
                     controller.setPlayerTurn(true);
                     if (controller.getAI()) {
