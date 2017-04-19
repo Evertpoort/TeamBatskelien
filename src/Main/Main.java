@@ -4,8 +4,8 @@ import Model.Model;
 import View.View;
 import javafx.application.Application;
 import javafx.stage.Stage;
-import java.io.IOException;
-import java.io.InputStream;
+
+import java.io.*;
 import java.util.Properties;
 
 public class Main extends Application {
@@ -22,23 +22,24 @@ public class Main extends Application {
 
     private Properties loadProperties() {
         Properties prop = null;
-        InputStream file = Main.class.getResourceAsStream("config.properties");
-        if (file != null) {
-            try {
-                prop = new Properties();
-                prop.load(file);
-            } catch (Exception e) {
-                System.out.println("Can't load config file config.properties, " + e);
-            } finally {
-                try {
-                    file.close();
-                } catch (IOException e) {
-                    System.out.println("Can't load config file config.properties, " + e);
-                }
-            }
-        } else {
+        InputStream file = null;
+        try {
+            file = new FileInputStream("config.properties");
+        } catch (FileNotFoundException e) {
             System.out.println("Can't find config file config.properties");
             System.exit(1);
+        }
+        try {
+            prop = new Properties();
+            prop.load(file);
+        } catch (Exception e) {
+            System.out.println("Can't load config file config.properties, " + e);
+        } finally {
+            try {
+                file.close();
+            } catch (IOException e) {
+                System.out.println("Can't load config file config.properties, " + e);
+            }
         }
         return prop;
     }
